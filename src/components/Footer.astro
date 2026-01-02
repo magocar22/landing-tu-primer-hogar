@@ -1,0 +1,134 @@
+---
+// src/components/Footer.astro
+import { Image } from "astro:assets";
+
+import imgLogo from "../assets/tph-logo-blanco.png";
+---
+
+<footer class="bg-blue-600 text-white">
+  <!-- ========================================== -->
+  <!-- PARTE SUPERIOR (Barra de herramientas) -->
+  <!-- ========================================== -->
+  <div class="border-b border-blue-500/50">
+    <div
+      class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-12 flex justify-between items-center text-sm font-medium"
+    >
+      <!-- Enlace Contacto (visible) -->
+      <a href="#contacto" class="hover:text-blue-100 transition-colors">
+        CONTACTO
+      </a>
+
+      <!-- Iconos Redes Sociales -->
+      <div class="flex space-x-4">
+        <!-- Facebook -->
+        <a
+          href="#"
+          aria-label="Facebook"
+          class="hover:text-blue-200 transition-colors"
+        >
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"
+            ><path
+              d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z"
+            ></path></svg
+          >
+        </a>
+        <!-- Twitter / X -->
+        <a
+          href="#"
+          aria-label="Twitter"
+          class="hover:text-blue-200 transition-colors"
+        >
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"
+            ><path
+              d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84"
+            ></path></svg
+          >
+        </a>
+        <!-- Youtube -->
+        <a
+          href="#"
+          aria-label="Youtube"
+          class="hover:text-blue-200 transition-colors"
+        >
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"
+            ><path
+              d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"
+            ></path></svg
+          >
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- ZONA PRINCIPAL (Grid 3 Columnas) -->
+  <!-- ========================================== -->
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-8 items-center">
+      <!-- COLUMNA 1: LOGO (Ocupa 4 espacios de 12) -->
+      <div class="md:col-span-4 flex flex-col items-center md:items-start">
+        <!-- Envolvemos el logo en un enlace a la home por usabilidad -->
+        <a href="/" class="block mb-4 transition-opacity hover:opacity-90">
+          <Image
+            src={imgLogo}
+            alt="Logotipo Tu Primer Hogar"
+            width={240}
+            class="h-auto w-48 md:w-60"
+          />
+        </a>
+      </div>
+
+      <!-- COLUMNA 2: DESCRIPCIÓN (Ocupa 4 espacios de 12) -->
+      <div class="md:col-span-4 text-center md:text-left">
+        <p class="text-blue-100 text-lg leading-relaxed">
+          Accede hoy a tu primera vivienda con nuestro modelo de alquiler con
+          derecho de compra. Sin barreras, sin sorpresas.
+        </p>
+      </div>
+
+      <!-- COLUMNA 3: DATOS CONTACTO (Ocupa 4 espacios de 12) -->
+      <div
+        class="md:col-span-4 flex flex-col items-center md:items-end text-center md:text-right space-y-2"
+      >
+        <h3 class="text-lg font-bold uppercase tracking-wider mb-2">
+          Contacto
+        </h3>
+
+        <a
+          href="tel:952777500"
+          class="text-2xl font-bold hover:text-blue-200 transition-colors"
+        >
+          952 777 500
+        </a>
+
+        <a
+          href="mailto:info@tuprimerhogar.es"
+          class="text-blue-100 hover:text-white transition-colors"
+        >
+          EMAIL: info@tuprimerhogar.es
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- BARRA INFERIOR (Legal) -->
+  <!-- ========================================== -->
+  <div class="bg-white text-gray-900 py-4">
+    <div
+      class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-center items-center text-sm font-semibold text-center"
+    >
+      <p>
+        <a href="#" class="hover:text-blue-600 transition-colors"
+          >Aviso Legal y Política de Privacidad</a
+        >
+        <span class="mx-2 hidden md:inline">|</span>
+        <span class="block md:hidden h-1"></span>
+        <!-- Salto de línea en móvil -->
+        <a href="#" class="hover:text-blue-600 transition-colors"
+          >Política de Cookies</a
+        >
+      </p>
+    </div>
+  </div>
+</footer>

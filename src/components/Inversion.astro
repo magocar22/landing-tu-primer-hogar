@@ -1,26 +1,36 @@
 ---
 // src/components/Inversion.astro
 
+// 1. IMPORTANTE: Importamos el componente optimizado de Astro
+import { Image } from 'astro:assets';
+
+// 2. Importamos las imágenes reales desde la carpeta assets
+// (Asegúrate de que los nombres de archivo coincidan exactamente)
+import imgModelo from '../assets/modelo-optimizado.jpg';
+import imgDemanda from '../assets/demanda-real.jpg';
+import imgPlusvalia from '../assets/plusvalia.jpg';
+
 const tarjetas = [
   {
     titulo: "Modelo optimizado",
     desc1: "Rentabilidad desde el alquiler, salida planificada mediante opción de compra. Equilibrio entre liquidez, riesgo y estabilidad.",
     desc2: "Ideal para inversores que buscan ingresos recurrentes desde el inicio sin renunciar a una plusvalía protegida y escalabilidad.",
-    imagen: "https://images.unsplash.com/photo-1554224155-6726b3ff858f?q=80&w=2000&auto=format&fit=crop", // Foto Tablet/Gráficas
+    // 3. CAMBIO: Asignamos la VARIABLE importada, no un texto entre comillas
+    imagen: imgModelo, 
     destacado: false
   },
   {
     titulo: "Demanda real",
     desc1: "Jóvenes con perfil estable que no pueden acceder a hipoteca pero desean comprar. Alta ocupación y bajo riesgo.",
     desc2: "Este perfil garantiza estabilidad en el retorno. Alta ocupación, bajo impago y fidelización natural por necesidad real.",
-    imagen: "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?q=80&w=2000&auto=format&fit=crop", // Foto Pareja Feliz
-    destacado: true // <--- ESTA ES LA TARJETA AZUL
+    imagen: imgDemanda,
+    destacado: true 
   },
   {
     titulo: "Plusvalía protegida",
     desc1: "El precio de recompra se define desde el inicio, garantizando beneficios sin incertidumbre ni burbujas especulativas.",
     desc2: "Este modelo te permite planificar la salida desde el inicio. Aporta control total sobre tus márgenes y un retorno sin sorpresas.",
-    imagen: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?q=80&w=2000&auto=format&fit=crop", // Foto Llaves/Contrato
+    imagen: imgPlusvalia, 
     destacado: false
   }
 ];
@@ -29,7 +39,6 @@ const tarjetas = [
 <section class="py-20 bg-gray-50">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     
-    <!-- TÍTULO DE LA SECCIÓN -->
     <div class="text-center mb-16">
       <h2 class="text-3xl md:text-4xl font-bold text-blue-600 mb-4">
         Un modelo de inversión rentable, social y escalable
@@ -39,7 +48,6 @@ const tarjetas = [
       </p>
     </div>
 
-    <!-- GRID DE TARJETAS -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
       
       {tarjetas.map((item) => (
@@ -50,15 +58,21 @@ const tarjetas = [
         `}>
           
           <!-- IMAGEN SUPERIOR -->
-          <div class="h-56 overflow-hidden">
-            <img 
+          <div class="h-56 overflow-hidden relative">
+            <!-- 
+                4. CAMBIO: Usamos el componente <Image />
+                - format="webp": Fuerza el formato moderno (opcional, Astro suele hacerlo auto).
+                - width={600}: Ayuda a Astro a generar el tamaño correcto (no cargará una foto 4K).
+                - class: Mantenemos tus clases de estilo.
+            -->
+            <Image 
               src={item.imagen} 
               alt={item.titulo} 
-              class="w-full h-full object-cover transition-transform duration-500"
+              width={600} 
+              class="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
             />
           </div>
 
-          <!-- CONTENIDO -->
           <div class="p-8 flex-1 flex flex-col">
             <h3 class={`text-2xl font-bold mb-6 ${item.destacado ? 'text-white' : 'text-blue-600'}`}>
               {item.titulo}

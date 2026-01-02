@@ -1,0 +1,146 @@
+---
+// src/components/Contacto.astro
+// No necesitamos scripts por ahora, solo estructura visual.
+---
+
+<section class="py-16 md:py-24 bg-blue-50" id="contacto">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-start">
+      
+      <!-- ============================================ -->
+      <!-- COLUMNA IZQUIERDA: INFORMACIÓN Y CONFIANZA -->
+      <!-- ============================================ -->
+      <div class="space-y-8">
+        <div>
+          <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+            ¿Tienes dudas? <br/>
+            <span class="text-blue-600">Hablemos de tu futuro hogar.</span>
+          </h2>
+          <p class="text-gray-600 text-lg leading-relaxed">
+            Nuestro equipo te explicará paso a paso cómo funciona el modelo sin entrada. Sin compromiso y con total transparencia.
+          </p>
+        </div>
+
+        <!-- BLOQUE DE DATOS DE CONTACTO -->
+        <div class="space-y-6">
+          
+          <!-- Teléfono -->
+          <div class="flex items-start">
+            <div class="flex-shrink-0">
+              <div class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-100 text-blue-600">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
+              </div>
+            </div>
+            <div class="ml-4">
+              <h3 class="text-lg font-medium text-gray-900">Teléfono</h3>
+              <p class="mt-1 text-gray-600">+34 952 000 000</p>
+              <p class="text-sm text-gray-500">Lunes a Viernes de 9:00 a 18:00</p>
+            </div>
+          </div>
+
+          <!-- Email -->
+          <div class="flex items-start">
+            <div class="flex-shrink-0">
+              <div class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-100 text-blue-600">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+              </div>
+            </div>
+            <div class="ml-4">
+              <h3 class="text-lg font-medium text-gray-900">Email</h3>
+              <p class="mt-1 text-gray-600">info@tuprimerhogar.es</p>
+              <p class="text-sm text-gray-500">Respondemos en menos de 24h</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ============================================ -->
+      <!-- COLUMNA DERECHA: EL FORMULARIO -->
+      <!-- ============================================ -->
+      <div class="bg-white rounded-3xl shadow-xl p-8 md:p-10 border border-gray-100">
+        
+        <!-- form sin action por ahora -->
+        <form class="space-y-6">
+          
+          <!-- Nombre -->
+          <div>
+            <label for="nombre" class="block text-sm font-medium text-gray-700 mb-2">Nombre completo</label>
+            <input 
+              type="text" 
+              id="nombre" 
+              name="nombre" 
+              placeholder="Ej: Juan Pérez"
+              class="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-200 focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-200 outline-none transition-all duration-200"
+            />
+          </div>
+
+          <!-- Email y Teléfono (En Grid para ahorrar espacio vertical) -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label for="email" class="block text-sm font-medium text-gray-700 mb-2">Correo electrónico</label>
+              <input 
+                type="email" 
+                id="email" 
+                name="email" 
+                placeholder="tu@email.com"
+                class="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-200 focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-200 outline-none transition-all duration-200"
+              />
+            </div>
+            <div>
+              <label for="telefono" class="block text-sm font-medium text-gray-700 mb-2">Teléfono</label>
+              <input 
+                type="tel" 
+                id="telefono" 
+                name="telefono" 
+                placeholder="600 00 00 00"
+                class="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-200 focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-200 outline-none transition-all duration-200"
+              />
+            </div>
+          </div>
+
+          <!-- Mensaje -->
+          <div>
+            <label for="mensaje" class="block text-sm font-medium text-gray-700 mb-2">¿Cómo podemos ayudarte?</label>
+            <textarea 
+              id="mensaje" 
+              name="mensaje" 
+              rows="4" 
+              placeholder="Me gustaría saber más sobre..."
+              class="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-200 focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-200 outline-none transition-all duration-200 resize-none"
+            ></textarea>
+          </div>
+
+          <!-- Checkbox Legal (CRÍTICO EN ESPAÑA) -->
+          <div class="flex items-start">
+            <div class="flex items-center h-5">
+              <input 
+                id="privacidad" 
+                name="privacidad" 
+                type="checkbox" 
+                class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+              />
+            </div>
+            <div class="ml-3 text-sm">
+              <label for="privacidad" class="text-gray-500">
+                He leído y acepto la <a href="#" class="text-blue-600 hover:underline">Política de Privacidad</a>.
+              </label>
+            </div>
+          </div>
+
+          <!-- Botón de Envío -->
+          <button 
+            type="submit" 
+            class="w-full bg-blue-600 text-white font-bold py-4 px-8 rounded-xl hover:bg-blue-700 transform transition-all duration-200 hover:-translate-y-1 shadow-lg hover:shadow-blue-500/30"
+          >
+            Enviar consulta gratis
+          </button>
+
+        </form>
+
+      </div>
+
+    </div>
+  </div>
+</section>

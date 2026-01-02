@@ -1,27 +1,29 @@
 ---
-// src/components/Impacto.astro
+import { Image } from 'astro:assets';
+// Cambia esto por el nombre real de tu archivo PNG
+import imgCasa from '../assets/modelo-imagen.png';
 ---
 
-<section class="py-20 bg-white">
+<section class="py-20 md:py-32 bg-white">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     
-    <!-- TÍTULO DE LA SECCIÓN -->
+    <!-- TÍTULO -->
     <div class="text-center mb-16">
       <h2 class="text-3xl md:text-4xl font-bold text-blue-600">
         Un modelo de alquiler e inversión con impacto social
       </h2>
     </div>
 
-    <!-- CONTENEDOR GRID -->
+    <!-- GRID PRINCIPAL -->
     <!-- 
-      En móvil: 1 columna (se apilan).
-      En PC (lg): 3 columnas.
-      items-center: Para que todo esté alineado verticalmente al centro.
+      items-stretch: ESTA ES LA CLAVE. Hace que todas las columnas tengan la misma altura.
+      lg:grid-cols-3: En escritorio son 3 columnas (Tarjeta - Imagen - Tarjeta).
     -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-10 items-center">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch">
       
-      <!-- TARJETA IZQUIERDA -->
-      <div class="bg-white border-2 border-blue-500 rounded-2xl p-8 shadow-lg hover:shadow-xl transition-shadow">
+      <!-- 1. TARJETA IZQUIERDA -->
+      <!-- h-full: Obliga a la tarjeta a ocupar toda la altura disponible de la fila -->
+      <div class="h-full bg-white border-2 border-blue-500 rounded-3xl p-8 shadow-lg flex flex-col justify-center text-center lg:text-left hover:shadow-xl transition-shadow">
         <h3 class="text-xl font-bold text-blue-600 mb-4">
           Tu alquiler se convierte en visión a largo plazo
         </h3>
@@ -30,27 +32,26 @@
         </p>
       </div>
 
-      <!-- IMAGEN CENTRAL -->
+      <!-- 2. IMAGEN CENTRAL (PNG TRANSPARENTE) -->
       <!-- 
-        En móvil: Le damos un tamaño máximo para que no sea enorme.
-        En PC: Ocupa su espacio natural.
-        NOTA: He usado una imagen de casa con fondo blanco/transparente para simular tu captura.
+         flex items-center justify-center: Centra la casa vertical y horizontalmente.
+         py-8: Un poco de aire arriba y abajo en móvil.
       -->
-      <div class="flex justify-center order-last lg:order-none py-6 lg:py-0">
-        <img 
-          src="https://images.unsplash.com/photo-1568605114967-8130f3a36994?q=80&w=1000&auto=format&fit=crop" 
-          alt="Casa modelo" 
-          class="w-full max-w-xs lg:max-w-full h-auto object-contain rounded-xl lg:scale-125 z-10"
-        />
+      <div class="flex items-center justify-center py-6 lg:py-0 relative z-10">
         <!-- 
-           TRUCO DE DISEÑO: "lg:scale-125" hace que la casa sea un poco más grande 
-           que las columnas de texto en PC, creando ese efecto de "sobresalir" 
-           que se ve bien en webs inmobiliarias.
+           w-auto h-auto: Mantiene la proporción original.
+           max-h-[350px]: Ponemos un límite de altura para que no se vuelva gigante si la pantalla es muy ancha.
+           drop-shadow-xl: Añade una sombra bonita al contorno de la casa (respeta la transparencia del PNG).
         -->
+        <Image 
+          src={imgCasa} 
+          alt="Casa independiente moderna" 
+          class="w-auto h-auto max-h-[300px] lg:max-h-[400px] object-contain drop-shadow-2xl transition-transform duration-500 hover:scale-105"
+        />
       </div>
 
-      <!-- TARJETA DERECHA -->
-      <div class="bg-white border-2 border-blue-500 rounded-2xl p-8 shadow-lg hover:shadow-xl transition-shadow">
+      <!-- 3. TARJETA DERECHA -->
+      <div class="h-full bg-white border-2 border-blue-500 rounded-3xl p-8 shadow-lg flex flex-col justify-center text-center lg:text-left hover:shadow-xl transition-shadow">
         <h3 class="text-xl font-bold text-blue-600 mb-4">
           Inversión con propósito y retorno medible
         </h3>

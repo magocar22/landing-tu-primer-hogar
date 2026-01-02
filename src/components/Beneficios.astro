@@ -1,0 +1,77 @@
+---
+import { Image } from 'astro:assets';
+// Importa tus imágenes reales
+import imgPareja from '../assets/pareja-suelo.jpg';
+import imgSalon from '../assets/salon-vacio.jpg';
+---
+
+<section class="py-16 md:py-32 bg-white overflow-hidden">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-24 md:space-y-32">
+    
+    <!-- ========================================== -->
+    <!-- FILA 1: TEXTO (Izquierda) - IMAGEN (Derecha) -->
+    <!-- ========================================== -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-20 items-center">
+      
+      <!-- BLOQUE DE TEXTO -->
+      <div class="order-2 md:order-1"> <!-- En móvil baja (2), en PC sube (1) si quisieras controlar el orden -->
+        <h2 class="text-3xl md:text-4xl font-bold text-blue-600 mb-6 leading-tight">
+          Tu vivienda sin entrada ni complicaciones
+        </h2>
+        <p class="text-gray-600 text-lg leading-relaxed mb-6">
+          Accede hoy mismo a tu futura casa sin necesidad de entrada inicial. Vive en ella, con un modelo de alquiler flexible que te permite acumular capital y comprar solo si lo deseas.
+        </p>
+        <!-- Opcional: Un pequeño enlace o botón          
+        <a href="#" class="text-blue-600 font-semibold hover:underline inline-flex items-center">
+          Saber más 
+          <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+        </a> -->
+      </div>
+
+      <!-- BLOQUE DE IMAGEN -->
+      <div class="order-1 md:order-2 flex justify-center">
+        <Image 
+          src={imgPareja} 
+          alt="Pareja joven tomando café en el suelo de su nueva casa"
+          width={600}
+          class="rounded-3xl shadow-2xl w-full h-auto object-cover transform transition-transform duration-500 hover:scale-[1.02]"
+        />
+      </div>
+
+    </div>
+
+    <!-- ========================================== -->
+    <!-- FILA 2: IMAGEN (Izquierda) - TEXTO (Derecha) -->
+    <!-- ========================================== -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-20 items-center">
+      
+      <!-- BLOQUE DE IMAGEN -->
+      <!-- En móvil, al ser el primer div, saldrá arriba. En PC saldrá a la izquierda. -->
+      <div class="flex justify-center">
+        <Image 
+          src={imgSalon} 
+          alt="Salón luminoso y vacío listo para amueblar"
+          width={600}
+          class="rounded-3xl shadow-2xl w-full h-auto object-cover transform transition-transform duration-500 hover:scale-[1.02]"
+        />
+      </div>
+
+      <!-- BLOQUE DE TEXTO -->
+      <div>
+        <h2 class="text-3xl md:text-4xl font-bold text-blue-600 mb-6 leading-tight">
+          Flexibilidad, estabilidad y derecho de compra
+        </h2>
+        <p class="text-gray-600 text-lg leading-relaxed mb-6">
+          Olvídate de presiones financieras. Con nuestro modelo, tienes derecho a comprar al final o dejarla sin penalización. Tendrás acceso a condiciones preferentes, ayudas y acompañamiento durante todo el proceso.
+        </p>
+        <!-- Opcional: Un pequeño enlace o botón
+        <a href="#" class="text-blue-600 font-semibold hover:underline inline-flex items-center">
+          Ver condiciones
+          <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+        </a> -->
+      </div>
+
+    </div>
+
+  </div>
+</section>
