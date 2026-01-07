@@ -1,5 +1,6 @@
 ---
 // src/pages/index.astro
+import BaseHead from "../components/BaseHead.astro";
 import Concepto from "../components/Concepto.astro";
 import Inversion from "../components/Inversion.astro";
 import Impacto from "../components/Impacto.astro";
@@ -13,15 +14,14 @@ import imgLogo from "../assets/tph-logo-blanco.png";
 
 <html lang="es">
   <head>
-    <meta charset="utf-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width" />
-    <meta name="generator" content={Astro.generator} />
-    <title>Tu Primer Hogar - Alquiler con opción a compra</title>
+    <BaseHead
+      title="Tu Primer Hogar | Alquiler con opción a compra"
+      description="Consigue tu vivienda sin pagar entrada inicial. Nuestro modelo convierte tu alquiler mensual en inversión para tu futuro hogar. Infórmate gratis."
+    />
   </head>
   <body>
     <!-- SECCIÓN HERO (PORTADA) -->
-    
+
     <section
       class="relative h-screen min-h-[600px] flex items-center justify-center bg-cover bg-center"
       style="background-image: url('/img/hero-image.jpg');"
@@ -75,7 +75,7 @@ import imgLogo from "../assets/tph-logo-blanco.png";
         <div
           class="flex flex-col sm:flex-row gap-4 justify-center items-center w-full"
         >
-          <!-- BOTÓN 1: CONTACTO / SOLICITAR INFO (Ancla al formulario del final) -->
+          <!-- BOTÓN 1: CONTACTO / SOLICITAR INFO (Enlaza a la página de contacto) -->
           <a
             href="/contacto"
             class="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-10 rounded-full text-lg transition-all transform hover:-translate-y-1 hover:shadow-lg hover:shadow-blue-500/50"
@@ -83,7 +83,7 @@ import imgLogo from "../assets/tph-logo-blanco.png";
             Solicita más información
           </a>
 
-          <!-- BOTÓN 2: SABER MÁS (Ancla a la sección de beneficios) -->
+          <!-- BOTÓN 2: SABER MÁS (Ancla a la sección de "El Concepto") -->
           <a
             href="#modelo"
             class="w-full sm:w-auto bg-transparent hover:bg-white/10 text-white font-bold py-4 px-10 rounded-full text-lg transition-all border-2 border-white backdrop-blur-sm"
