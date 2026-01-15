@@ -8,21 +8,36 @@ import Footer from '../../components/Footer.astro';
   <head>
     <BaseHead title="Mi Panel | Inversores" description="Panel de control privado" />
   </head>
-  <body class="bg-gray-50">
+  
+  <!-- 
+    CORRECCIÓN AQUÍ:
+    Añadimos 'pt-24' (unos 96px) al body.
+    Esto crea el espacio necesario para que el Navbar fijo no tape el saludo.
+  -->
+  <body class="bg-gray-50 pt-24 font-sans text-gray-800">
     
+    <!-- Navbar (Al no poner isTransparent, sale blanca por defecto, perfecto para el dashboard) -->
     <Navbar />
 
     <main class="max-w-7xl mx-auto px-4 py-12">
         
-        <!-- SALUDO -->
-        <div class="flex flex-col md:flex-row justify-between items-center mb-10 border-b border-gray-200 pb-6">
-            <div>
+        <!-- SALUDO Y BOTÓN CERRAR -->
+        <!-- 
+           md:flex-row: En PC se ponen en línea (uno a cada lado).
+           items-center: Se alinean verticalmente al centro.
+        -->
+        <div class="flex flex-col md:flex-row justify-between items-center mb-10 border-b border-gray-200 pb-6 gap-4 md:gap-0">
+            
+            <!-- Izquierda: Saludo -->
+            <div class="text-center md:text-left">
                 <h1 class="text-3xl font-bold text-gray-900">Hola, Inversor Demo 👋</h1>
-                <p class="text-gray-500">Bienvenido a tu panel de control.</p>
+                <p class="text-gray-500 mt-1">Bienvenido a tu panel de control.</p>
             </div>
-            <div class="mt-4 md:mt-0">
-                <a href="/inversores" class="text-red-600 hover:text-red-800 text-sm font-medium flex items-center">
-                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+
+            <!-- Derecha: Cerrar sesión -->
+            <div>
+                <a href="/inversores" class="group flex items-center px-4 py-2 bg-white border border-gray-200 rounded-lg text-red-600 text-sm font-bold hover:bg-red-50 hover:border-red-200 transition-all shadow-sm">
+                    <svg class="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
                     Cerrar Sesión
                 </a>
             </div>
@@ -34,13 +49,15 @@ import Footer from '../../components/Footer.astro';
             <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
                 <div class="text-gray-500 text-sm font-medium mb-1">Inversión Total</div>
                 <div class="text-3xl font-bold text-blue-900">150.000 €</div>
-                <div class="text-green-600 text-xs font-bold mt-2">↑ Activa</div>
+                <div class="text-green-600 text-xs font-bold mt-2 flex items-center">
+                    <span class="w-2 h-2 bg-green-500 rounded-full mr-1"></span> Activa
+                </div>
             </div>
             <!-- Tarjeta 2 -->
             <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
                 <div class="text-gray-500 text-sm font-medium mb-1">Proyecto Asignado</div>
-                <div class="text-xl font-bold text-gray-900">Residencial Málaga Este</div>
-                <div class="text-blue-600 text-xs font-bold mt-2 hover:underline cursor-pointer">Ver ficha técnica →</div>
+                <div class="text-xl font-bold text-gray-900 leading-tight">Residencial Málaga Este</div>
+                <a href="/proyectos" class="text-blue-600 text-xs font-bold mt-3 inline-block hover:underline">Ver ficha técnica →</a>
             </div>
             <!-- Tarjeta 3 -->
             <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
@@ -52,17 +69,17 @@ import Footer from '../../components/Footer.astro';
 
         <!-- SECCIÓN DE DOCUMENTOS -->
         <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
-            <div class="bg-gray-50 px-8 py-4 border-b border-gray-200">
-                <h2 class="text-lg font-bold text-gray-800">Documentación del Proyecto</h2>
+            <div class="bg-gray-50 px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+                <h2 class="text-lg font-bold text-gray-800">Documentación</h2>
+                <span class="text-xs font-medium text-gray-500 bg-white px-2 py-1 rounded border border-gray-200">3 Archivos</span>
             </div>
             
             <div class="divide-y divide-gray-100">
                 
                 <!-- Documento 1 -->
-                <div class="p-6 flex items-center justify-between hover:bg-blue-50 transition-colors cursor-pointer group">
+                <div class="p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between hover:bg-blue-50 transition-colors cursor-pointer group gap-4">
                     <div class="flex items-center">
-                        <div class="bg-red-100 text-red-600 p-3 rounded-lg mr-4 group-hover:bg-red-200 transition-colors">
-                            <!-- Icono PDF -->
+                        <div class="bg-red-100 text-red-600 p-3 rounded-xl mr-4 group-hover:bg-red-600 group-hover:text-white transition-colors">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
                         </div>
                         <div>
@@ -70,37 +87,35 @@ import Footer from '../../components/Footer.astro';
                             <p class="text-sm text-gray-500">Actualizado: 12 Ene 2025</p>
                         </div>
                     </div>
-                    <button class="text-blue-600 font-bold text-sm hover:underline">Descargar</button>
+                    <button class="text-blue-600 font-bold text-sm hover:underline whitespace-nowrap">Descargar PDF</button>
                 </div>
 
                 <!-- Documento 2 -->
-                <div class="p-6 flex items-center justify-between hover:bg-blue-50 transition-colors cursor-pointer group">
+                <div class="p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between hover:bg-blue-50 transition-colors cursor-pointer group gap-4">
                     <div class="flex items-center">
-                        <div class="bg-blue-100 text-blue-600 p-3 rounded-lg mr-4 group-hover:bg-blue-200 transition-colors">
-                            <!-- Icono Imagen/Plano -->
+                        <div class="bg-blue-100 text-blue-600 p-3 rounded-xl mr-4 group-hover:bg-blue-600 group-hover:text-white transition-colors">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                         </div>
                         <div>
                             <h3 class="font-bold text-gray-900">Planos de Obra y Licencias</h3>
-                            <p class="text-sm text-gray-500">PDF - 14.5 MB</p>
+                            <p class="text-sm text-gray-500">Imágenes - 14.5 MB</p>
                         </div>
                     </div>
-                    <button class="text-blue-600 font-bold text-sm hover:underline">Descargar</button>
+                    <button class="text-blue-600 font-bold text-sm hover:underline whitespace-nowrap">Descargar ZIP</button>
                 </div>
 
                 <!-- Documento 3 -->
-                <div class="p-6 flex items-center justify-between hover:bg-blue-50 transition-colors cursor-pointer group">
+                <div class="p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between hover:bg-blue-50 transition-colors cursor-pointer group gap-4">
                     <div class="flex items-center">
-                        <div class="bg-green-100 text-green-600 p-3 rounded-lg mr-4 group-hover:bg-green-200 transition-colors">
-                            <!-- Icono Excel/Reporte -->
+                        <div class="bg-green-100 text-green-600 p-3 rounded-xl mr-4 group-hover:bg-green-600 group-hover:text-white transition-colors">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 00-2 2v14a2 2 0 002 2h10a2 2 0 002-2V9a2 2 0 00-2-2h-1"></path></svg>
                         </div>
                         <div>
                             <h3 class="font-bold text-gray-900">Reporte Mensual - Diciembre</h3>
-                            <p class="text-sm text-gray-500">Estado de cuentas y evolución</p>
+                            <p class="text-sm text-gray-500">Estado de cuentas</p>
                         </div>
                     </div>
-                    <button class="text-blue-600 font-bold text-sm hover:underline">Descargar</button>
+                    <button class="text-blue-600 font-bold text-sm hover:underline whitespace-nowrap">Descargar XLS</button>
                 </div>
 
             </div>
