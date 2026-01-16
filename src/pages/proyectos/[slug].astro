@@ -9,7 +9,8 @@ import React from 'react';
 
 export const prerender = true;
 
-const STRAPI_URL = "http://127.0.0.1:1337";
+// Si existe la variable de entorno (en la nube), úsala. Si no, usa localhost.
+const STRAPI_URL = import.meta.env.PUBLIC_STRAPI_URL || "http://127.0.0.1:1337";
 
 export async function getStaticPaths() {
   const proyectos = await fetchApi<any[]>({

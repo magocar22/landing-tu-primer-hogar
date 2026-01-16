@@ -1,5 +1,5 @@
 // src/lib/strapi.ts
-import qs from 'qs';
+import qs from "qs";
 
 interface Props {
   endpoint: string;
@@ -17,12 +17,12 @@ export default async function fetchApi<T>({
   wrappedByKey,
   wrappedByList,
 }: Props): Promise<T> {
-  
-  if (endpoint.startsWith('/')) {
+  if (endpoint.startsWith("/")) {
     endpoint = endpoint.slice(1);
   }
 
-  const url = new URL(`http://localhost:1337/api/${endpoint}`);
+  // Si existe la variable de entorno (en la nube), úsala. Si no, usa localhost.
+  const STRAPI_URL = import.meta.env.PUBLIC_STRAPI_URL || "http://127.0.0.1:1337";
 
   if (query) {
     const q = qs.stringify(query);
