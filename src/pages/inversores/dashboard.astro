@@ -3,33 +3,51 @@ import BaseHead from '../../components/BaseHead.astro';
 import Navbar from '../../components/Navbar.astro';
 import Footer from '../../components/Footer.astro';
 
+// 1. Configuración
+const STRAPI_URL = import.meta.env.PUBLIC_STRAPI_URL || "http://127.0.0.1:1337";
+
 // --- SEGURIDAD ---
 const jwt = Astro.cookies.get('jwt')?.value;
 if (!jwt) return Astro.redirect('/inversores');
 
-// CONEXIÓN A STRAPI
-const response = await fetch("http://127.0.0.1:1337/api/users/me?populate[proyectos][populate]=documentos_privados", {
+// 2. Conexión a Strapi
+const response = await fetch(`${STRAPI_URL}/api/users/me?populate[proyectos][populate]=documentos_privados`, {
     headers: { Authorization: `Bearer ${jwt}` }
 });
 
 if (!response.ok) return Astro.redirect('/api/logout');
 
 const usuario = await response.json();
-const misProyectos = usuario.proyectos || [];
-const STRAPI_URL = "http://127.0.0.1:1337";
 
-// Función auxiliar para determinar color del icono según extensión
-const getFileStyle = (ext) => {
-    if (ext.includes('pdf')) return 'bg-red-50 text-red-600';
-    if (ext.includes('xls') || ext.includes('csv')) return 'bg-green-50 text-green-600';
-    if (ext.includes('jpg') || ext.includes('png') || ext.includes('zip')) return 'bg-blue-50 text-blue-600';
+// --- LÓGICA DE DATOS ---
+const rawProyectos = usuario.proyectos || [];
+
+// FILTRO DE DUPLICADOS:
+// Filtramos por 'titulo' para evitar que relaciones fantasmas o errores de ID
+// muestren el mismo proyecto dos veces.
+const misProyectos = [...new Map(
+    rawProyectos
+      .filter((p: any) => p && p.titulo) // Ignoramos proyectos vacíos o corruptos
+      .map((item: any) => [item.titulo, item]) // Usamos el título como clave única
+).values()];
+
+
+// 3. Función auxiliar para estilos (UI)
+const getFileStyle = (ext: string) => {
+    if (!ext) return 'bg-gray-50 text-gray-600';
+    const extension = ext.toLowerCase();
+    
+    if (extension.includes('pdf')) return 'bg-red-50 text-red-600';
+    if (extension.includes('xls') || extension.includes('csv')) return 'bg-green-50 text-green-600';
+    if (extension.includes('jpg') || extension.includes('png') || extension.includes('zip')) return 'bg-blue-50 text-blue-600';
+    
     return 'bg-gray-50 text-gray-600';
 };
 ---
 
 <html lang="es">
   <head>
-    <BaseHead title="Mi Panel | Inversores" description="Panel privado" />
+    <BaseHead title="Mi Panel | Inversores" description="Panel privado de gestión de inversiones." />
   </head>
   <body class="bg-gray-50 pt-24 font-sans text-gray-800">
     
@@ -37,8 +55,7 @@ const getFileStyle = (ext) => {
 
     <main class="max-w-5xl mx-auto px-4 py-12 min-h-[70vh]">
         
-        <!-- CABECERA SIMPLE -->
-        <div class="flex justify-between items-end mb-12">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 gap-4">
             <div>
                 <h1 class="text-3xl font-bold text-gray-900">Hola, {usuario.username}</h1>
                 <p class="text-gray-500 mt-1">Aquí tienes la documentación actualizada de tus inversiones.</p>
@@ -48,98 +65,93 @@ const getFileStyle = (ext) => {
             </a>
         </div>
 
-        <!-- 
-           LISTADO DE PROYECTOS
-           Si tiene 3 proyectos, saldrán 3 bloques uno debajo de otro.
-        -->
         {misProyectos.length === 0 ? (
-            <div class="bg-white p-12 rounded-2xl border border-gray-200 text-center">
-                <p class="text-gray-500">No tienes proyectos asignados actualmente.</p>
+            <div class="bg-white p-12 rounded-2xl border border-gray-200 text-center shadow-sm">
+                <p class="text-gray-500 mb-2">No tienes proyectos asignados actualmente.</p>
+                <p class="text-sm text-gray-400">Si crees que es un error, contacta con administración.</p>
             </div>
         ) : (
-            <div class="space-y-10"> <!-- Espacio entre proyectos -->
-                
+            <div class="space-y-10">
                 {misProyectos.map((proyecto: any) => (
                     
-                    // TARJETA DE PROYECTO (Estilo limpio)
-                    <div class="bg-white rounded-3xl shadow-sm border border-gray-200 overflow-hidden">
+                    <article class="bg-white rounded-3xl shadow-sm border border-gray-200 overflow-hidden transition-shadow hover:shadow-md">
                         
-                        <!-- 1. TÍTULO DEL PROYECTO (Arriba izquierda) -->
-                        <div class="p-8 border-b border-gray-100 bg-white">
+                        <div class="p-6 md:p-8 border-b border-gray-100 bg-white">
                             <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
                                 <div>
-                                    <span class="text-xs font-bold text-blue-600 uppercase tracking-wider mb-1 block">Proyecto Asignado</span>
-                                    <h2 class="text-2xl md:text-3xl font-bold text-gray-900">{proyecto.titulo}</h2>
-                                    <div class="flex items-center text-gray-500 text-sm mt-2">
-                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                                        {proyecto.ubicacion}
-                                    </div>
+                                    <span class="text-xs font-bold text-blue-600 uppercase tracking-wider mb-2 block">
+                                        Proyecto de Inversión
+                                    </span>
+                                    <h2 class="text-2xl md:text-3xl font-bold text-gray-900 leading-tight">
+                                        {proyecto.titulo}
+                                    </h2>
+                                    
+                                    {proyecto.ubicacion && (
+                                        <div class="flex items-center text-gray-500 text-sm mt-3">
+                                            <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                                            {proyecto.ubicacion}
+                                        </div>
+                                    )}
                                 </div>
-                                <!-- Estado (Opcional, queda bien) -->
-                                <span class="px-4 py-1.5 bg-gray-100 text-gray-600 rounded-full text-xs font-bold uppercase self-start md:self-center">
+                                
+                                <span class="px-4 py-1.5 bg-gray-100 text-gray-600 rounded-full text-xs font-bold uppercase self-start md:self-center whitespace-nowrap">
                                     {proyecto.estado || 'Activo'}
                                 </span>
                             </div>
                         </div>
 
-                        <!-- 2. LISTADO DE DOCUMENTOS -->
                         <div class="bg-gray-50/50 p-6 md:p-8">
                             <h3 class="text-sm font-bold text-gray-900 mb-6 flex items-center">
                                 Documentación Disponible
                                 <span class="ml-2 bg-gray-200 text-gray-600 py-0.5 px-2 rounded text-xs">
-                                    {proyecto.documentos_privados?.length || 0} Archivos
+                                    {proyecto.documentos_privados?.length || 0}
                                 </span>
                             </h3>
 
                             {proyecto.documentos_privados && proyecto.documentos_privados.length > 0 ? (
-                                <div class="flex flex-col gap-3">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     {proyecto.documentos_privados.map((doc: any) => {
-                                        // Calculamos estilo según extensión
                                         const iconStyle = getFileStyle(doc.ext);
-                                        
                                         return (
-                                            <div class="flex items-center justify-between p-4 bg-white border border-gray-200 rounded-xl hover:shadow-md hover:border-blue-300 transition-all group">
-                                                
-                                                <!-- Izquierda: Icono + Nombre -->
+                                            <div class="flex items-center justify-between p-4 bg-white border border-gray-200 rounded-xl hover:border-blue-300 transition-colors group h-full">
                                                 <div class="flex items-center gap-4 overflow-hidden">
-                                                    <!-- Icono de Archivo (Color dinámico) -->
-                                                    <div class={`w-12 h-12 flex-shrink-0 flex items-center justify-center rounded-lg ${iconStyle}`}>
-                                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                                                    <div class={`w-10 h-10 flex-shrink-0 flex items-center justify-center rounded-lg ${iconStyle}`}>
+                                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
                                                     </div>
                                                     
-                                                    <!-- Info Texto -->
-                                                    <div class="min-w-0">
-                                                        <p class="font-bold text-gray-900 truncate pr-4">{doc.name}</p>
-                                                        <p class="text-xs text-gray-500 flex items-center">
-                                                            {doc.ext.replace('.', '').toUpperCase()} 
-                                                            <span class="mx-1">•</span> 
+                                                    <div class="min-w-0 flex-1">
+                                                        <p class="font-bold text-gray-900 text-sm truncate" title={doc.name}>
+                                                            {doc.name}
+                                                        </p>
+                                                        <p class="text-xs text-gray-400 flex items-center mt-0.5">
+                                                            {doc.ext?.replace('.', '').toUpperCase()} 
+                                                            <span class="mx-1.5">•</span> 
                                                             {Math.round(doc.size)} KB
-                                                            <span class="mx-1">•</span>
-                                                            Actualizado hoy {/* Strapi tiene updatedAt si lo quieres preciso */}
                                                         </p>
                                                     </div>
                                                 </div>
 
-                                                <!-- Derecha: Botón Descarga -->
                                                 <a 
                                                     href={STRAPI_URL + doc.url} 
                                                     target="_blank"
-                                                    class="text-sm font-bold text-blue-600 hover:text-blue-800 whitespace-nowrap px-4 py-2 hover:bg-blue-50 rounded-lg transition-colors"
+                                                    rel="noopener noreferrer"
+                                                    class="ml-2 p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                                                    title="Descargar documento"
                                                 >
-                                                    Descargar
+                                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
                                                 </a>
                                             </div>
                                         );
                                     })}
                                 </div>
                             ) : (
-                                <div class="text-center py-8 border-2 border-dashed border-gray-200 rounded-xl">
-                                    <p class="text-gray-400 text-sm">No hay documentos cargados para este proyecto.</p>
+                                <div class="text-center py-10 border-2 border-dashed border-gray-200 rounded-xl bg-gray-50">
+                                    <p class="text-gray-400 text-sm">No hay documentos disponibles en este momento.</p>
                                 </div>
                             )}
                         </div>
 
-                    </div>
+                    </article>
                 ))}
             </div>
         )}

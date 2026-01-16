@@ -3,21 +3,31 @@ import { Image } from 'astro:assets';
 import BaseHead from '../../components/BaseHead.astro';
 import Footer from '../../components/Footer.astro';
 import ContactoForm from '../../components/Contacto.astro';
-import logoBlanco from '../../assets/tph-logo-blanco.png'; // Para el header si quieres logo
-
-// Conexión Strapi
 import fetchApi from '../../lib/strapi';
 import { BlocksRenderer } from '@strapi/blocks-react-renderer';
+import React from 'react';
 
 export const prerender = true;
+
+const STRAPI_URL = "http://127.0.0.1:1337";
 
 export async function getStaticPaths() {
   const proyectos = await fetchApi<any[]>({
     endpoint: 'proyectos',
-    query: { populate: '*' }
+    query: {
+        populate: {
+            imagen_principal: true,
+            cuerpo: {
+                on: {
+                    'blog-elementos.parrafo': { populate: '*' },
+                    'blog-elementos.foto-articulo': { populate: '*' },
+                    'blog-elementos.descarga-pdf': { populate: '*' }
+                }
+            }
+        }
+    }
   });
 
-  // Filtramos slugs válidos
   const validos = proyectos.filter(p => p.slug && p.slug !== null);
 
   return validos.map(proyecto => ({
@@ -27,7 +37,22 @@ export async function getStaticPaths() {
 }
 
 const { proyecto } = Astro.props;
-const STRAPI_URL = "http://localhost:1337";
+if (!proyecto) return Astro.redirect('/proyectos');
+
+const bloques = proyecto.cuerpo || [];
+
+// RENDERIZADOR PARA IMÁGENES DENTRO DE TEXTO (Rich Text)
+const renderizadorPersonalizado = {
+  image: ({ image }) => {
+    if (!image.url) return null;
+    const src = image.url.startsWith('http') ? image.url : STRAPI_URL + image.url;
+    return React.createElement('img', {
+      src: src,
+      alt: image.alternativeText || '',
+      className: 'w-full h-auto rounded-2xl shadow-md my-10 border border-gray-100',
+    });
+  }
+};
 ---
 
 <html lang="es">
@@ -36,7 +61,7 @@ const STRAPI_URL = "http://localhost:1337";
   </head>
   <body class="bg-gray-50 font-sans text-gray-800">
     
-    <!-- HEADER CON IMAGEN DEL PROYECTO -->
+    <!-- HEADER -->
     <header class="relative h-[50vh] min-h-[400px] flex items-end">
         {proyecto.imagen_principal ? (
             <Image 
@@ -52,7 +77,6 @@ const STRAPI_URL = "http://localhost:1337";
         
         <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
         
-        <!-- Navbar flotante de vuelta -->
         <div class="absolute top-0 w-full p-6 z-20">
              <a href="/proyectos" class="text-white font-bold flex items-center gap-2 hover:underline bg-black/20 px-4 py-2 rounded-full backdrop-blur-md w-fit">
                 ← Volver al listado
@@ -75,9 +99,74 @@ const STRAPI_URL = "http://localhost:1337";
         
         <!-- COLUMNA IZQUIERDA: INFORMACIÓN -->
         <div class="lg:col-span-2">
-            <article class="prose prose-blue prose-lg max-w-none bg-white p-8 md:p-10 rounded-3xl shadow-sm border border-gray-100">
-                <BlocksRenderer content={proyecto.descripcion_larga || []} />
-            </article>
+            <div class="bg-white p-8 md:p-10 rounded-3xl shadow-sm border border-gray-100">
+                
+                <article class="prose prose-blue prose-lg max-w-none text-gray-600">
+                    {bloques.map((bloque: any) => {
+                        
+                        // 1. PÁRRAFO
+                        if (bloque.__component === 'blog-elementos.parrafo') {
+                            return (
+                                <div class="mb-6">
+                                    <BlocksRenderer 
+                                        content={bloque.texto} 
+                                        blocks={renderizadorPersonalizado}
+                                    />
+                                </div>
+                            );
+                        }
+
+                        // 2. FOTO ARTÍCULO
+                        if (bloque.__component === 'blog-elementos.foto-articulo') {
+                            // En tu JSON el campo se llama 'archivo_imagen'
+                            const img = bloque.archivo_imagen;
+                            
+                            if (!img) return null; // Si está vacío, no pintamos nada
+
+                            return (
+                                <figure class="my-10 not-prose">
+                                    <img 
+                                        src={STRAPI_URL + img.url} 
+                                        alt={img.alternativeText || 'Imagen del proyecto'} 
+                                        class="w-full rounded-2xl shadow-md border border-gray-100"
+                                    />
+                                </figure>
+                            );
+                        }
+
+                        // 3. DESCARGA PDF
+                        if (bloque.__component === 'blog-elementos.descarga-pdf') {
+                            // En tu JSON el campo se llama 'archivo_pdf'
+                            const file = bloque.archivo_pdf;
+                            
+                            if (!file) return null;
+
+                            return (
+                                <div class="my-8 p-5 bg-blue-50 rounded-xl border border-blue-100 flex items-center justify-between not-prose hover:shadow-md transition-shadow">
+                                    <div class="flex items-center gap-3">
+                                        <div class="bg-white p-2.5 rounded-lg text-red-500 shadow-sm shrink-0">
+                                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+                                        </div>
+                                        <div>
+                                            <p class="font-bold text-gray-900 text-base leading-tight">
+                                                {bloque.titulo_descarga || file.name}
+                                            </p>
+                                            <p class="text-xs text-gray-500 uppercase tracking-wide">
+                                                PDF • {Math.round(file.size)} KB
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <a href={STRAPI_URL + file.url} target="_blank" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-blue-700 transition-colors">
+                                        Descargar
+                                    </a>
+                                </div>
+                            );
+                        }
+                        return null;
+                    })}
+                </article>
+
+            </div>
         </div>
 
         <!-- COLUMNA DERECHA: CONTACTO -->
@@ -88,12 +177,10 @@ const STRAPI_URL = "http://localhost:1337";
                         <h3 class="text-xl font-bold">¿Te interesa este proyecto?</h3>
                         <p class="text-blue-100 text-sm mt-1">Solicita el dossier completo de {proyecto.titulo}.</p>
                     </div>
-                    <!-- Decoración fondo -->
                     <div class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2"></div>
                 </div>
                 
                 <div class="bg-white p-6 rounded-b-3xl shadow-xl border border-gray-100">
-                    <!-- Pasamos 'simple={true}' para que encaje en el sidebar -->
                     <ContactoForm simple={true} />
                 </div>
             </div>

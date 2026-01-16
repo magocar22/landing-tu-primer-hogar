@@ -5,15 +5,31 @@ import Navbar from '../../components/Navbar.astro';
 import Footer from '../../components/Footer.astro';
 import fetchApi from '../../lib/strapi';
 
-// 1. Usamos el renderizador oficial de Strapi (React)
+// Importamos el renderizador de bloques para los párrafos
 import { BlocksRenderer } from '@strapi/blocks-react-renderer';
 
+// --- ESTA ES LA LÍNEA MÁGICA QUE FALTA ---
 export const prerender = true;
+// ----------------------------------------
+
+// URL Base
+const STRAPI_URL = "http://127.0.0.1:1337";
 
 export async function getStaticPaths() {
   const posts = await fetchApi<any[]>({
     endpoint: 'noticias',
-    query: { populate: '*' }
+    query: {
+        populate: {
+            imagen: true,
+            cuerpo: {
+                on: {
+                    'blog-elementos.parrafo': { populate: '*' },
+                    'blog-elementos.foto-articulo': { populate: '*' },
+                    'blog-elementos.descarga-pdf': { populate: '*' }
+                }
+            }
+        }
+    }
   });
 
   const noticiasValidas = posts.filter(post => post.slug && post.slug !== null);
@@ -25,7 +41,12 @@ export async function getStaticPaths() {
 }
 
 const { post } = Astro.props;
-const STRAPI_URL = "http://localhost:1337";
+// Añadimos seguridad: si post no existe (por el error anterior), evitamos el crash
+if (!post) {
+  return Astro.redirect('/blog');
+}
+
+const bloques = post.cuerpo || []; 
 ---
 
 <html lang="es">
@@ -59,17 +80,70 @@ const STRAPI_URL = "http://localhost:1337";
                         class="w-full h-full object-cover" 
                     />
                 ) : (
-                    <div class="w-full h-64 bg-gray-200 flex items-center justify-center text-gray-400">Sin imagen</div>
+                    <div class="w-full h-64 bg-gray-200"></div>
                 )}
             </div>
         </div>
 
-        <!-- 
-           CONTENIDO
-           Aquí está la clave. 'prose' le da estilo a lo que pinte el BlocksRenderer.
-        -->
+        <!-- RENDERIZADOR DE DYNAMIC ZONE -->
         <article class="prose prose-blue prose-lg mx-auto text-gray-600">
-            <BlocksRenderer content={post.contenido || []} />
+            
+            {bloques.map((bloque: any) => {
+                
+                // 1. PÁRRAFO (Rich Text)
+                if (bloque.__component === 'blog-elementos.parrafo') {
+                    return (
+                        <div class="mb-8">
+                            <BlocksRenderer content={bloque.texto} />
+                        </div>
+                    );
+                }
+
+                // 2. FOTO ARTÍCULO
+                if (bloque.__component === 'blog-elementos.foto-articulo') {
+                    const img = bloque.archivo_imagen;
+                    if (!img) return null;
+                    return (
+                        <figure class="my-12 not-prose">
+                            <img 
+                                src={STRAPI_URL + img.url} 
+                                alt={img.alternativeText || ''} 
+                                class="w-full rounded-2xl shadow-lg"
+                            />
+                            {/* Si tuvieras pie de foto en strapi, iría aquí */}
+                        </figure>
+                    );
+                }
+
+                // 3. DESCARGA PDF
+                if (bloque.__component === 'blog-elementos.descarga-pdf') {
+                    const file = bloque.archivo_pdf;
+                    if (!file) return null;
+                    return (
+                        <div class="my-10 p-6 bg-blue-50 rounded-xl border border-blue-100 flex items-center justify-between not-prose hover:shadow-md transition-shadow">
+                            <div class="flex items-center gap-4">
+                                <div class="bg-white p-3 rounded-lg text-red-500 shadow-sm shrink-0">
+                                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+                                </div>
+                                <div>
+                                    <p class="font-bold text-gray-900 text-lg leading-tight mb-1">
+                                        {bloque.titulo_descarga || file.name}
+                                    </p>
+                                    <p class="text-xs text-gray-500 font-medium uppercase tracking-wide">
+                                        PDF • {Math.round(file.size)} KB
+                                    </p>
+                                </div>
+                            </div>
+                            <a href={STRAPI_URL + file.url} target="_blank" class="bg-blue-600 text-white px-6 py-2.5 rounded-lg font-bold hover:bg-blue-700 transition-colors shadow-sm">
+                                Descargar
+                            </a>
+                        </div>
+                    );
+                }
+
+                return null;
+            })}
+
         </article>
 
         <div class="mt-16 pt-8 border-t border-gray-100 text-center">
