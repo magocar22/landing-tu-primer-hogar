@@ -16,6 +16,6 @@ export default defineConfig({
     domains: ["localhost", "127.0.0.1", "res.cloudinary.com"], // Añade Cloudinary por si acaso
   },
 
-  // CAMBIO: Usamos el adaptador de Netlify
+  // Usamos el adaptador de Netlify
   adapter: netlify(),
 });

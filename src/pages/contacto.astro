@@ -1,12 +1,11 @@
 ---
 // src/pages/contacto.astro
 import BaseHead from '../components/BaseHead.astro';
-import Navbar from '../components/Navbar.astro'; // <--- NUEVO
+import Navbar from '../components/Navbar.astro';
 import ContactoForm from '../components/Contacto.astro';
 import Footer from '../components/Footer.astro';
 
 // Assets
-// Borramos el logoBlanco porque ya está en el Navbar
 import imgFondo from '../assets/pareja-suelo.jpg'; 
 ---
 
@@ -27,7 +26,6 @@ import imgFondo from '../assets/pareja-suelo.jpg';
 
     <!-- 
       CABECERA "MINI HERO" 
-      Hemos quitado el logo central. Ahora solo queda el Título.
     -->
     <header class="relative h-[40vh] min-h-[300px] flex flex-col items-center justify-center bg-cover bg-center" style={`background-image: url('${imgFondo.src}');`}>
         

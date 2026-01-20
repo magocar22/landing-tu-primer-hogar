@@ -46,9 +46,7 @@ const STRAPI_URL = import.meta.env.PUBLIC_STRAPI_URL || "http://127.0.0.1:1337";
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
             {posts.map((post) => {
                 // --- LÓGICA INTELIGENTE DE IMAGEN ---
-                // Si hay imagen:
-                // ¿Empieza por 'http'? -> Es de Cloudinary, úsala tal cual.
-                // ¿No empieza por 'http'? -> Es local, ponle el dominio delante.
+
                 let imgSrc = null;
                 if (post.imagen) {
                     imgSrc = post.imagen.url.startsWith('http') 

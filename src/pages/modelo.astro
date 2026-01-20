@@ -19,19 +19,19 @@ import imgHero from '../assets/pareja-suelo.jpg';
     <Navbar isTransparent={true} />
 
     <!-- 
-      1. HERO EXACTO (Igualado a Contacto)
-      - h-[40vh]: Altura relativa idéntica.
-      - min-h-[300px]: Altura mínima idéntica (antes era 400px, por eso se veía grande).
-      - justify-center: Centramos el contenido verticalmente.
+    1. HERO EXACTO (Igualado a Contacto, Proyectos y Actualidad)
+    - h-[40vh]: Altura relativa.
+    - min-h-[300px]: Altura mínima idéntica.
+    - justify-center: Centramos el contenido verticalmente.
     -->
     <header class="relative h-[40vh] min-h-[300px] flex flex-col justify-center items-center bg-cover bg-center" style={`background-image: url('${imgHero.src}');`}>
         
         <div class="absolute inset-0 bg-blue-900/70"></div>
         
         <!-- 
-           AJUSTE DE POSICIÓN
-           - mt-16: Margen superior para compensar visualmente el menú (en Contacto usamos mt-10, 
-             aquí un pelín más porque hay 3 líneas de texto: etiqueta + título doble).
+        AJUSTE DE POSICIÓN
+        - mt-16: Margen superior para compensar visualmente el menú (en Contacto usamos mt-10, 
+        aquí un pelín más porque hay 3 líneas de texto: etiqueta + título doble).
         -->
         <div class="relative z-10 text-center px-4 max-w-5xl mx-auto mt-16">
             
@@ -49,8 +49,7 @@ import imgHero from '../assets/pareja-suelo.jpg';
     </header>
 
     <!-- 
-      2. SECCIÓN "PUENTE"
-      Mantenemos py-24, funciona bien con el header más corto.
+    2. SECCIÓN "PUENTE"
     -->
     <section class="py-24 bg-white">
         <div class="max-w-4xl mx-auto px-4 text-center">
@@ -156,7 +155,7 @@ import imgHero from '../assets/pareja-suelo.jpg';
                 </div>
 
                 <!-- 
-                COLUMNA DERECHA: LA NUEVA VISUALIZACIÓN "DINERO INTELIGENTE" 
+                COLUMNA DERECHA: VISUALIZACIÓN "DINERO INTELIGENTE" 
                 Sin números, solo concepto visual.
                 -->
                 <div class="bg-gray-800 rounded-3xl p-10 border border-gray-700 shadow-2xl relative overflow-hidden">
@@ -237,11 +236,11 @@ import imgHero from '../assets/pareja-suelo.jpg';
             </div>
             
             <div class="max-w-lg mx-auto">
-                 <div class="bg-white p-1 rounded-3xl shadow-2xl border border-gray-100">
+                <div class="bg-white p-1 rounded-3xl shadow-2xl border border-gray-100">
                     <div class="bg-gray-50 rounded-[1.3rem] p-6">
                         <ContactoForm simple={true} />
                     </div>
-                 </div>
+                </div>
             </div>
         </div>
     </div>

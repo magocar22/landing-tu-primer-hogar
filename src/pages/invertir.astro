@@ -1,0 +1,201 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Navbar from '../components/Navbar.astro';
+import Footer from '../components/Footer.astro';
+import ContactoForm from '../components/Contacto.astro';
+import { Image } from 'astro:assets';
+
+// Imagen de cabecera para la página de inversión
+import imgHeader from '../assets/distrito-financiero.jpg'; 
+---
+
+<html lang="es">
+  <head>
+    <BaseHead 
+      title="Inversión SOCIMI | Tu Primer Hogar" 
+      description="Invierte en una SOCIMI cotizada en BME ScaleUp con rentabilidad garantizada y modelo defensivo." 
+    />
+  </head>
+  <body class="bg-white font-sans text-gray-800">
+    
+    <Navbar isTransparent={true} />
+
+    <!-- 1. HERO INVERSIÓN (Tono Financiero) -->
+    <header class="relative h-[60vh] min-h-[500px] flex flex-col justify-center items-center bg-cover bg-center" style={`background-image: url('${imgHeader.src}');`}>
+        <div class="absolute inset-0 bg-gray-900/80"></div> <!-- Más oscuro para seriedad -->
+        
+        <div class="relative z-10 text-center px-4 max-w-5xl mx-auto pt-16">
+            <span class="inline-block py-1.5 px-5 rounded-full bg-blue-600 text-white text-xs font-bold tracking-[0.2em] uppercase mb-6 shadow-lg">
+                Cotizada en BME ScaleUp
+            </span>
+            <h1 class="text-3xl md:text-5xl lg:text-6xl font-bold text-white leading-tight mb-6">
+                Rentabilidad inmobiliaria, <br/>
+                <span class="text-blue-300">seguridad de SOCIMI.</span>
+            </h1>
+            <p class="text-xl text-gray-300 font-light max-w-2xl mx-auto">
+                Accede a un modelo de inversión defensivo con dividendos garantizados por ley y una rentabilidad estimada superior al 15% acumulado.
+            </p>
+            <div class="mt-10">
+                <a href="#contacto-inversor" class="bg-white text-blue-900 font-bold py-3 px-8 rounded-full hover:bg-blue-50 transition-colors shadow-lg">
+                    Solicitar Dossier de Inversión
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- 2. VENTAJAS ACCIONISTA (Grid 2x2) -->
+    <section class="py-24 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-900">Ventajas para el accionista</h2>
+                <p class="text-gray-500 mt-4 max-w-2xl mx-auto">Un vehículo de inversión regulado diseñado para maximizar el retorno y minimizar el riesgo.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+                <!-- Ventaja 1 -->
+                <div class="p-8 rounded-3xl border border-gray-100 shadow-lg bg-white hover:-translate-y-1 transition-transform">
+                    <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center text-blue-600 mb-6">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">Dividendo Garantizado</h3>
+                    <p class="text-gray-600 leading-relaxed">Como SOCIMI, estamos obligados por ley a distribuir al menos el 80% de los beneficios procedentes de alquileres y el 50% de las plusvalías por venta.</p>
+                </div>
+
+                <!-- Ventaja 2 -->
+                <div class="p-8 rounded-3xl border border-gray-100 shadow-lg bg-white hover:-translate-y-1 transition-transform">
+                    <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center text-green-600 mb-6">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">Multiplicador de Valor</h3>
+                    <p class="text-gray-600 leading-relaxed">Reinversión de capital inicial + 20% de beneficio a coste cero para el accionista. Generación de retornos "infinitos" (cash flow sin capital en riesgo tras recuperación).</p>
+                </div>
+
+                <!-- Ventaja 3 -->
+                <div class="p-8 rounded-3xl border border-gray-100 shadow-lg bg-white hover:-translate-y-1 transition-transform">
+                    <div class="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center text-indigo-600 mb-6">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">Garantía Inmobiliaria</h3>
+                    <p class="text-gray-600 leading-relaxed">Inversión respaldada por activos tangibles (inmuebles). El patrimonio inmobiliario garantiza el equity invertido en activos con demanda creciente.</p>
+                </div>
+
+                <!-- Ventaja 4 -->
+                <div class="p-8 rounded-3xl border border-gray-100 shadow-lg bg-white hover:-translate-y-1 transition-transform">
+                    <div class="w-12 h-12 bg-yellow-100 rounded-xl flex items-center justify-center text-yellow-600 mb-6">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">Rentabilidad Superior</h3>
+                    <p class="text-gray-600 leading-relaxed">Rentabilidades de doble dígito apalancadas. Comparativa superior al dividendo medio del IBEX35 (6,5%).</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+<!-- SEPARADOR -->
+    <div class="bg-white pb-12">
+        <div class="max-w-2xl mx-auto px-4 flex items-center justify-center">
+            
+            <!-- Línea izquierda (desvanece) -->
+            <div class="h-px bg-gradient-to-r from-transparent to-blue-400 flex-1"></div>
+            
+            <!-- Icono central sutil -->
+            <div class="mx-4 text-blue-500">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7-7-7"></path></svg>
+            </div>
+            
+            <!-- Línea derecha (desvanece) -->
+            <div class="h-px bg-gradient-to-l from-transparent to-blue-400 flex-1"></div>
+        </div>
+    </div>
+
+    <!-- 3. MODELO DEFENSIVO (Mitigación de Riesgos) -->
+    <section class="py-24 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row gap-16 items-center">
+                
+                <div class="md:w-1/2">
+                    <span class="text-blue-600 font-bold tracking-widest text-sm uppercase mb-2 block">Mitigación de Riesgos</span>
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-6">Un modelo defensivo frente al BTR tradicional</h2>
+                    <p class="text-gray-600 text-lg mb-8">
+                        Mientras el Build to Rent (BTR) sufre alta rotación y costes de mantenimiento, nuestro modelo alinea los intereses del inquilino con los del propietario.
+                    </p>
+                    
+                    <div class="space-y-6">
+                        <div class="flex items-start">
+                            <div class="shrink-0">
+                                <svg class="w-6 h-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            </div>
+                            <div class="ml-4">
+                                <h4 class="text-lg font-bold text-gray-900">Riesgo de Impago: Muy Bajo</h4>
+                                <p class="text-gray-600 text-sm">El inquilino perdería su derecho de compra y todo el capital acumulado si deja de pagar.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <div class="shrink-0">
+                                <svg class="w-6 h-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            </div>
+                            <div class="ml-4">
+                                <h4 class="text-lg font-bold text-gray-900">Rotación 0%</h4>
+                                <p class="text-gray-600 text-sm">Frente al 20-30% anual del alquiler tradicional. El cliente se queda porque está comprando.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <div class="shrink-0">
+                                <svg class="w-6 h-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            </div>
+                            <div class="ml-4">
+                                <h4 class="text-lg font-bold text-gray-900">Exit Garantizado</h4>
+                                <p class="text-gray-600 text-sm">Comprador identificado desde el día 1. No hay que buscar mercado de salida a los 7 años.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="md:w-1/2">
+                    <div class="bg-white p-8 rounded-3xl shadow-xl border border-gray-100">
+                        <h3 class="text-xl font-bold text-gray-900 mb-6">Selección de Activos (Filtros)</h3>
+                        <div class="space-y-4">
+                            <div class="p-4 bg-blue-50 rounded-xl border-l-4 border-blue-600">
+                                <span class="text-xs font-bold text-blue-600 uppercase">Filtro 1</span>
+                                <p class="font-bold text-gray-900 mt-1">Ubicaciones Estratégicas</p>
+                                <p class="text-sm text-gray-600">Zonas con potencial de transformación y acceso a transporte.</p>
+                            </div>
+                            <div class="p-4 bg-blue-50 rounded-xl border-l-4 border-blue-600">
+                                <span class="text-xs font-bold text-blue-600 uppercase">Filtro 2</span>
+                                <p class="font-bold text-gray-900 mt-1">Demografía y Demanda</p>
+                                <p class="text-sm text-gray-600">Ratio empleo/vivienda > 2,5 y déficit de obra nueva.</p>
+                            </div>
+                            <div class="p-4 bg-blue-50 rounded-xl border-l-4 border-blue-600">
+                                <span class="text-xs font-bold text-blue-600 uppercase">Filtro 3</span>
+                                <p class="font-bold text-gray-900 mt-1">Margen Financiero</p>
+                                <p class="text-sm text-gray-600">Margen garantizado para modelo dual (Alquiler + Venta).</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. CTA INVERSOR -->
+    <div id="contacto-inversor" class="bg-gray-900 py-24 text-white">
+        <div class="max-w-4xl mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">¿Interesado en participar?</h2>
+                <p class="text-gray-400 text-lg">Solicita el dossier completo de inversión y accede a nuestra próxima ronda.</p>
+            </div>
+            
+            <div class="max-w-xl mx-auto bg-white rounded-3xl p-1 overflow-hidden text-black">
+                <div class="bg-gray-50 rounded-[1.3rem] p-8">
+                    <!-- Usamos el formulario simple, pero con un título personalizado si quisiéramos -->
+                    <ContactoForm simple={true} tipo="inversor" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <Footer />
+
+  </body>
+</html>

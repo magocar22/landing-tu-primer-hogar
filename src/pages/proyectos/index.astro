@@ -40,7 +40,7 @@ const proyectos = await fetchApi<any[]>({
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
             {proyectos.map((proyecto) => {
                 
-                // LÓGICA INTELIGENTE TAMBIÉN AQUÍ
+                // LÓGICA INTELIGENTE PARA CARGAR LA IMAGEN
                 let imgSrc = null;
                 if (proyecto.imagen_principal) {
                     imgSrc = proyecto.imagen_principal.url.startsWith('http') 
