@@ -1,7 +1,14 @@
 import type { APIRoute } from 'astro';
 
-// Tu URL local de WordPress
-const WP_URL = "http://localhost/tph-backend"; 
+// 1. OBTENEMOS LA URL DE LA VARIABLE DE ENTORNO
+// Si no existe (local), usa localhost.
+let WP_URL = import.meta.env.PUBLIC_WP_URL || "http://localhost/tph-backend";
+
+// 2. LIMPIEZA DE SEGURIDAD
+// Si la URL acaba en barra '/', se la quitamos para no duplicarla
+if (WP_URL.endsWith('/')) {
+  WP_URL = WP_URL.slice(0, -1);
+}
 
 export const POST: APIRoute = async ({ request, cookies }) => {
   const data = await request.json();
