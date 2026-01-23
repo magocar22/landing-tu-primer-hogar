@@ -1,7 +1,10 @@
 // src/lib/wordpress.ts
 
-// Tu URL local de XAMPP (Asegúrate de que el nombre de la carpeta en htdocs es correcto)
-const WP_URL = "http://localhost/tph-backend"; 
+// 1. CAMBIO IMPORTANTE:
+// Intentamos leer la variable de entorno. Si no existe (ej. desarrollo local sin .env), usa localhost como respaldo.
+const ENV_URL = import.meta.env.PUBLIC_WP_URL;
+// Aseguramos que no tenga barra al final para evitar errores de doble //
+const BASE = ENV_URL ? ENV_URL.replace(/\/$/, "") : "http://localhost/tph-backend";
 
 interface WPFetchOptions {
   endpoint: string;
@@ -9,7 +12,8 @@ interface WPFetchOptions {
 }
 
 export async function fetchWP<T>({ endpoint, params }: WPFetchOptions): Promise<T> {
-  const url = new URL(`${WP_URL}/wp-json/wp/v2/${endpoint}`);
+  // 2. Usamos la variable BASE que ya contiene la URL correcta (Railway o Localhost)
+  const url = new URL(`${BASE}/wp-json/wp/v2/${endpoint}`);
 
   if (params) {
     Object.entries(params).forEach(([key, value]) => {
@@ -21,6 +25,8 @@ export async function fetchWP<T>({ endpoint, params }: WPFetchOptions): Promise<
   if (!url.searchParams.has('_embed')) {
       url.searchParams.append('_embed', 'true');
   }
+
+  console.log(`📡 Fetching: ${url.toString()}`); // Log para ver qué está pidiendo
 
   const res = await fetch(url.toString());
   
