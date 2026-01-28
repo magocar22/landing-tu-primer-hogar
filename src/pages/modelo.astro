@@ -8,38 +8,32 @@ import imgHero from '../assets/pareja-suelo.jpg';
 ---
 
 <html lang="es">
-  <head>
+<head>
     <BaseHead 
-      title="Cómo Funciona | Tu Primer Hogar" 
-      description="Descubre nuestro modelo de alquiler con opción a compra." 
+    title="Cómo Funciona | Tu Primer Hogar" 
+    description="Descubre nuestro modelo de alquiler con opción a compra." 
     />
-  </head>
-  <body class="bg-white font-sans text-gray-800">
+</head>
+<body class="bg-white font-sans text-gray-800">
     
     <Navbar isTransparent={true} />
 
     <!-- 
-    1. HERO EXACTO (Igualado a Contacto, Proyectos y Actualidad)
+    1. HERO SECTION
     - h-[40vh]: Altura relativa.
-    - min-h-[300px]: Altura mínima idéntica.
+    - min-h-[300px]: Altura mínima absoluta.
     - justify-center: Centramos el contenido verticalmente.
     -->
     <header class="relative h-[40vh] min-h-[300px] flex flex-col justify-center items-center bg-cover bg-center" style={`background-image: url('${imgHero.src}');`}>
         
         <div class="absolute inset-0 bg-blue-900/70"></div>
-        
-        <!-- 
-        AJUSTE DE POSICIÓN
-        - mt-16: Margen superior para compensar visualmente el menú (en Contacto usamos mt-10, 
-        aquí un pelín más porque hay 3 líneas de texto: etiqueta + título doble).
-        -->
+
         <div class="relative z-10 text-center px-4 max-w-5xl mx-auto mt-16">
             
             <span class="inline-block py-1 px-4 rounded-full bg-white/10 border border-white/30 text-white text-[10px] font-bold tracking-[0.2em] uppercase backdrop-blur-md mb-4 shadow-sm">
                 El Método TPH
             </span>
             
-            <!-- Texto ajustado para el espacio más pequeño -->
             <h1 class="text-3xl md:text-5xl font-bold text-white leading-tight drop-shadow-lg">
                 Tu alquiler ahora <br/>
                 <span class="text-blue-300">es una inversión.</span>
@@ -148,7 +142,7 @@ import imgHero from '../assets/pareja-suelo.jpg';
                             </div>
                             <div class="ml-6">
                                 <h3 class="text-xl leading-6 font-bold text-white">Accesibilidad Real</h3>
-                                <p class="mt-2 text-base text-gray-400 leading-relaxed">Sin la barrera de los 40.000€ iniciales. Tu capacidad de pago mensual es tu aval.</p>
+                                <p class="mt-2 text-base text-gray-400 leading-relaxed">Sin la barrera del 20% de aportación inicial. Tu capacidad de pago mensual es tu aval.</p>
                             </div>
                         </div>
                     </div>
@@ -247,5 +241,5 @@ import imgHero from '../assets/pareja-suelo.jpg';
 
     <Footer />
 
-  </body>
+</body>
 </html>

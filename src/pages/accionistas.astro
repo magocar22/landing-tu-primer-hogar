@@ -6,16 +6,16 @@ import { fetchWP } from '../lib/wordpress';
 import imgHeader from '../assets/fondo-salon.jpg'; // Tu imagen
 
 // 1. UNA SOLA LLAMADA A LA API
-// Pedimos 'documentos' (asegúrate de que el slug en CPT UI sea 'documentos')
+// Pedimos 'documentos' (el slug en CPT UI debe ser 'documentos')
 // Pedimos 100 para asegurar que traemos todo el histórico
 const todosLosDocs = await fetchWP<any[]>({
-  endpoint: 'documentos',
-  params: { 
+endpoint: 'documentos',
+params: { 
     per_page: '100', 
     acf_format: 'standard',
     orderby: 'date',
     order: 'desc' // Lo más nuevo primero
-  }
+}
 });
 
 // 2. CLASIFICACIÓN (Javascript)
@@ -33,13 +33,13 @@ const getFileLabel = (url) => {
 ---
 
 <html lang="es" class="scroll-smooth">
-  <head>
+<head>
     <BaseHead 
-      title="Inversores y Accionistas | Tu Primer Hogar" 
-      description="Información corporativa, financiera y hechos relevantes." 
+    title="Inversores y Accionistas | Tu Primer Hogar" 
+    description="Información corporativa, financiera y hechos relevantes." 
     />
-  </head>
-  <body class="bg-gray-50 font-sans text-gray-800">
+</head>
+<body class="bg-gray-50 font-sans text-gray-800">
     
     <Navbar isTransparent={true} />
 
@@ -76,7 +76,7 @@ const getFileLabel = (url) => {
                 
                 <!-- 1. GENERAL -->
                 <section id="info-general" class="scroll-mt-28">
-                    <h2 class="text-2xl font-bold text-gray-900 mb-8 border-b border-gray-200 pb-4">Información General</h2>
+                    <h2 class="text-2xl font-bold text-blue-600 mb-8 border-b border-gray-200 pb-4">Información General</h2>
                     <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden mb-10 shadow-sm">
                         {docsGeneral.map((doc) => (
                             <div class="flex items-center justify-between p-5 border-b border-gray-100 last:border-0 hover:bg-gray-50 transition-colors gap-4">
@@ -105,7 +105,7 @@ const getFileLabel = (url) => {
 
                 <!-- 2. FINANCIERA -->
                 <section id="info-financiera" class="scroll-mt-28">
-                    <h2 class="text-2xl font-bold text-gray-900 mb-8 border-b border-gray-200 pb-4">Información Financiera</h2>
+                    <h2 class="text-2xl font-bold text-blue-600 mb-8 border-b border-gray-200 pb-4">Información Financiera</h2>
                     <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden mb-10 shadow-sm">
                         {docsFinanciera.map((doc) => (
                             <div class="flex items-center justify-between p-5 border-b border-gray-100 last:border-0 hover:bg-gray-50 transition-colors gap-4">
@@ -135,9 +135,9 @@ const getFileLabel = (url) => {
                     </div>
                 </section>
 
-                <!-- 3. HECHOS RELEVANTES (Estilo Distinto con Fecha) -->
+                <!-- 3. HECHOS RELEVANTES (con fecha) -->
                 <section id="hechos-relevantes" class="scroll-mt-28">
-                    <h2 class="text-2xl font-bold text-gray-900 mb-8 border-b border-gray-200 pb-4">Hechos Relevantes</h2>
+                    <h2 class="text-2xl font-bold text-blue-600 mb-8 border-b border-gray-200 pb-4">Hechos Relevantes</h2>
                     
                     <div class="space-y-4">
                         {hechosRelevantes.map((hr) => (
@@ -146,7 +146,7 @@ const getFileLabel = (url) => {
                                     <div class="flex items-center gap-3 mb-1">
                                         <span class="bg-gray-100 text-gray-600 text-xs font-bold px-2 py-1 rounded border border-gray-200">HR</span>
                                         <span class="text-sm text-gray-500 font-medium">
-                                            {/* Aquí SÍ mostramos la fecha, vital para BME */}
+                                            {}
                                             {new Date(hr.date).toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' })}
                                         </span>
                                     </div>
@@ -169,5 +169,5 @@ const getFileLabel = (url) => {
     </main>
 
     <Footer />
-  </body>
+</body>
 </html>
