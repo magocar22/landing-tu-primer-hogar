@@ -1,13 +1,13 @@
 ---
 // src/components/VisionMision.astro
 import { Image } from 'astro:assets';
-// Asegúrate de tener esta imagen o usa una de prueba
+// Imagen de fondo para la sección
 import imgFondo from '../assets/fondo-salon.jpg';
 ---
 
 <!-- 
   SECCIÓN CON FONDO PARALLAX 
-  bg-fixed: Hace que la imagen se quede "quieta" mientras haces scroll. Efecto muy elegante.
+  bg-fixed: Hace que la imagen se quede "quieta" mientras haces scroll.
 -->
 <section class="relative py-20 md:py-32 bg-fixed bg-center bg-cover" style={`background-image: url('${imgFondo.src}');`}>
   
@@ -34,7 +34,7 @@ import imgFondo from '../assets/fondo-salon.jpg';
           </svg>
         </div>
 
-        <h3 class="text-3xl font-bold text-gray-900 mb-4">
+        <h3 class="text-3xl font-bold text-blue-600 mb-4">
           Nuestra Visión
         </h3>
         
@@ -53,7 +53,7 @@ import imgFondo from '../assets/fondo-salon.jpg';
           </svg>
         </div>
 
-        <h3 class="text-3xl font-bold text-gray-900 mb-4">
+        <h3 class="text-3xl font-bold text-blue-600 mb-4">
           Nuestra Misión
         </h3>
         

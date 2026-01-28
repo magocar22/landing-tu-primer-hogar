@@ -6,13 +6,13 @@ import react from "@astrojs/react";
 import vercel from "@astrojs/vercel";
 
 export default defineConfig({
-  site: 'https://tuprimerhogar.es',
+  site: 'https://tph-frontend.vercel.app',
   output: 'server',
 
   integrations: [tailwind(), sitemap(), react()],
 
   image: {
-    domains: ["localhost", "127.0.0.1", "res.cloudinary.com"], 
+    domains: ["localhost", "127.0.0.1"], 
   },
 
   // Usamos el adaptador de Vercel para desplegar en Vercel el prototipo

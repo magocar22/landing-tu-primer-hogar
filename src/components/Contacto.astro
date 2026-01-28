@@ -1,5 +1,6 @@
 ---
 // src/components/Contacto.astro
+import { WP_URL } from '../lib/wordpress'; // Importamos la URL centralizada
 
 const { simple = false, tipo = 'Cliente' } = Astro.props; // 'Cliente' o 'Inversor'
 
@@ -9,9 +10,12 @@ const placeholderMensaje = tipo === 'Inversor'
     ? "Estoy interesado en oportunidades de inversión..."
     : "Me gustaría saber más sobre cómo acceder a una vivienda...";
 
-// URL WP y ID del Formulario
-const WP_URL = "http://localhost/tph-backend"; 
-const FORM_ID = "25"; // <--- ¡¡PON AQUÍ EL ID QUE APUNTASTE ANTES!!
+// ID del Formulario en WordPress (CF7)
+// ¡IMPORTANTE! Cambia este número por el ID real que te dé WordPress al crear el formulario
+const FORM_ID = "8079e0a";
+
+// Preparamos la URL base limpia para el script
+const API_URL = WP_URL.replace(/\/$/, '');
 ---
 
 <div class={simple ? "w-full" : "py-16 md:py-24 bg-blue-50"} id="contacto">
@@ -22,13 +26,12 @@ const FORM_ID = "25"; // <--- ¡¡PON AQUÍ EL ID QUE APUNTASTE ANTES!!
       <!-- Texto Ayuda -->
       {!simple && tipo !== 'Inversor' && (
         <div class="space-y-8">
-             <div>
+            <div>
                 <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">¿Tienes dudas?</h2>
                 <p class="text-gray-600 text-lg leading-relaxed">
                     Nuestro equipo te explicará paso a paso cómo funciona el modelo sin entrada.
                 </p>
             </div>
-            <!-- Datos de contacto estáticos si quieres ponerlos aquí -->
         </div>
       )}
 
@@ -37,8 +40,7 @@ const FORM_ID = "25"; // <--- ¡¡PON AQUÍ EL ID QUE APUNTASTE ANTES!!
         
         <form id="wp-contact-form" class="space-y-4">
           
-          <!-- CAMPO OCULTO QUE ENVIAMOS A WP -->
-          <!-- El nombre 'profile-type' debe coincidir con el [hidden profile-type] de CF7 -->
+          <!-- CAMPO OCULTO (Tipo de perfil) -->
           <input type="hidden" name="profile-type" value={tipo}>
       
           <div>
@@ -63,7 +65,6 @@ const FORM_ID = "25"; // <--- ¡¡PON AQUÍ EL ID QUE APUNTASTE ANTES!!
           </div>
       
           <div class="flex items-start">
-            <!-- Checkbox de aceptación (nombre 'acceptance' coincide con CF7) -->
             <input type="checkbox" name="acceptance" value="1" required class="mt-1 w-4 h-4 text-blue-600 rounded focus:ring-blue-500" />
             <span class="ml-2 text-xs text-gray-500">Acepto la <a href="/politica-privacidad" target="_blank" class="text-blue-600 hover:underline">Política de Privacidad</a>.</span>
           </div>
@@ -81,7 +82,7 @@ const FORM_ID = "25"; // <--- ¡¡PON AQUÍ EL ID QUE APUNTASTE ANTES!!
   </div>
 </div>
 
-<script is:inline define:vars={{ WP_URL, FORM_ID }}>
+<script is:inline define:vars={{ API_URL, FORM_ID }}>
   const form = document.getElementById('wp-contact-form');
   const result = document.getElementById('result');
   const btn = document.getElementById('btn-submit');
@@ -92,38 +93,39 @@ const FORM_ID = "25"; // <--- ¡¡PON AQUÍ EL ID QUE APUNTASTE ANTES!!
         
         const formData = new FormData(form);
         
-        // Estado Enviando
+        // Efecto visual "Enviando"
         const textoOriginal = btn.innerHTML;
-        btn.innerHTML = "Enviando...";
+        btn.innerHTML = `<span class="animate-pulse">Enviando...</span>`;
         btn.disabled = true;
         result.classList.add('hidden');
 
         try {
-            // Endpoint mágico de Contact Form 7
-            const endpoint = `${WP_URL}/wp-json/contact-form-7/v1/contact-forms/${FORM_ID}/feedback`;
+            // URL dinámica basada en la configuración global
+            const endpoint = `${API_URL}/wp-json/contact-form-7/v1/contact-forms/${FORM_ID}/feedback`;
             
             const response = await fetch(endpoint, {
                 method: 'POST',
-                body: formData // CF7 acepta FormData directamente
+                body: formData 
             });
 
+            // Parsear respuesta
             const data = await response.json();
 
+            // CF7 devuelve status: 'mail_sent' si todo fue bien
             if (data.status === 'mail_sent') {
-                // Éxito
-                result.innerHTML = "¡Recibido! Gracias por tu interés.";
+                result.innerHTML = "✅ Mensaje recibido correctamente. Contactaremos contigo pronto.";
                 result.classList.remove('hidden', 'bg-red-100', 'text-red-700');
                 result.classList.add('bg-green-100', 'text-green-700');
                 form.reset();
             } else {
-                // Error de validación de WP
-                throw new Error(data.message || "Error al enviar");
+                // Manejo de errores específicos (spam, campos vacíos, error servidor)
+                throw new Error(data.message || "Error al procesar el envío");
             }
 
         } catch (error) {
-            console.error(error);
-            result.innerHTML = "Hubo un error. Inténtalo más tarde.";
-            result.classList.remove('hidden');
+            console.error("Error envío:", error);
+            result.innerHTML = "❌ Hubo un error al enviar. Por favor, revisa los campos o inténtalo más tarde.";
+            result.classList.remove('hidden', 'bg-green-100', 'text-green-700');
             result.classList.add('bg-red-100', 'text-red-700');
         } finally {
             btn.innerHTML = textoOriginal;

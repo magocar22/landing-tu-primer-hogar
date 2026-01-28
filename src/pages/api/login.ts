@@ -1,26 +1,21 @@
+// src/pages/api/login.ts
 import type { APIRoute } from 'astro';
-
-// 1. OBTENEMOS LA URL DE LA VARIABLE DE ENTORNO
-// Si no existe (local), usa localhost.
-let WP_URL = import.meta.env.PUBLIC_WP_URL || "http://localhost/tph-backend";
-
-// 2. LIMPIEZA DE SEGURIDAD
-// Si la URL acaba en barra '/', se la quitamos para no duplicarla
-if (WP_URL.endsWith('/')) {
-  WP_URL = WP_URL.slice(0, -1);
-}
+import { WP_URL } from '../../lib/wordpress'; // Importamos la URL centralizada
 
 export const POST: APIRoute = async ({ request, cookies }) => {
-  const data = await request.json();
-  const { identifier, password } = data; // 'identifier' es el usuario en el form
-
-  if (!identifier || !password) {
-    return new Response(JSON.stringify({ message: "Faltan datos" }), { status: 400 });
-  }
-
   try {
-    // 1. Pedimos el Token a WordPress
-    const wpRes = await fetch(`${WP_URL}/wp-json/jwt-auth/v1/token`, {
+    const data = await request.json();
+    const { identifier, password } = data; // 'identifier' es el username o email
+
+    if (!identifier || !password) {
+      return new Response(JSON.stringify({ message: "Faltan datos" }), { status: 400 });
+    }
+
+    // Limpiamos la URL base
+    const baseUrl = WP_URL.replace(/\/$/, '');
+    
+    // 1. Petición al WordPress (Plugin JWT Auth)
+    const wpRes = await fetch(`${baseUrl}/wp-json/jwt-auth/v1/token`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -31,29 +26,40 @@ export const POST: APIRoute = async ({ request, cookies }) => {
 
     const wpData = await wpRes.json();
 
-    // 2. Si falla (clave mal, usuario no existe...)
+    // 2. Validación de respuesta
+    // El plugin suele devolver statusCode 200 si es OK, o 403/401 si falla
     if (!wpRes.ok || !wpData.token) {
-      return new Response(JSON.stringify({ message: "Usuario o contraseña incorrectos" }), { status: 401 });
+      return new Response(JSON.stringify({ 
+        message: wpData.message || "Usuario o contraseña incorrectos" 
+      }), { status: 401 });
     }
 
-    // 3. ÉXITO: Guardamos el TOKEN en cookie
+    // 3. Configuración de Cookies
+    // Importante: En local (HTTP) 'secure' debe ser false. En Prod (HTTPS) true.
+    const isProd = import.meta.env.PROD; 
+
+    // Cookie del Token (HttpOnly por seguridad, el JS del navegador no la ve)
     cookies.set("wp_jwt", wpData.token, {
       path: "/",
       httpOnly: true,
-      secure: false, // false en local, true en producción
+      secure: isProd, 
+      sameSite: 'lax',
       maxAge: 60 * 60 * 24 * 7, // 1 semana
     });
 
-    // Guardamos el nombre para mostrar "Hola, Pepito"
+    // Cookie del Nombre (Para mostrar "Hola, usuario en la UI")
     cookies.set("wp_user_display", wpData.user_display_name, {
       path: "/",
-      httpOnly: false, 
+      httpOnly: false, // Esta sí la puede leer el JS para la UI
+      secure: isProd,
+      sameSite: 'lax',
       maxAge: 60 * 60 * 24 * 7,
     });
 
     return new Response(JSON.stringify({ success: true }), { status: 200 });
 
   } catch (error) {
-    return new Response(JSON.stringify({ message: "Error de conexión con WordPress" }), { status: 500 });
+    console.error("Login Error:", error);
+    return new Response(JSON.stringify({ message: "Error interno de conexión" }), { status: 500 });
   }
 };
