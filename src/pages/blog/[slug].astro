@@ -1,4 +1,5 @@
 ---
+// src/pages/blog/[slug].astro
 import { Image } from 'astro:assets';
 import BaseHead from '../../components/BaseHead.astro';
 import Navbar from '../../components/Navbar.astro';
@@ -8,61 +9,79 @@ import imgCabecera from '../../assets/fondo-salon.jpg';
 // 1. IMPORTAMOS LA CONEXIÓN A WORDPRESS
 import { fetchWP } from '../../lib/wordpress';
 
-// 2. ¡IMPORTANTE! FORZAMOS MODO ESTÁTICO PARA ESTA PÁGINA
-// Esto hace que getStaticPaths se ejecute y pase los datos (props) correctamente.
+// 2. FORZAMOS MODO ESTÁTICO
 export const prerender = true;
 
 // 3. GENERAMOS LAS RUTAS
 export async function getStaticPaths() {
+    const posts = await fetchWP<any[]>({
+        endpoint: 'posts',
+        params: { 
+            per_page: '100', 
+            _embed: 'true'
+        }
+    });
 
-  const posts = await fetchWP<any[]>({
-    endpoint: 'posts',
-    params: { 
-        per_page: '100', 
-        _embed: 'true'
-    }
-  });
-
-  return posts.map(post => ({
-    params: { slug: post.slug }, 
-    props: { post }, 
-  }));
+    return posts.map(post => ({
+        params: { slug: post.slug }, 
+        props: { post }, 
+    }));
 }
 
-// 4. RECUPERAMOS DATOS CON SEGURIDAD
+// 4. RECUPERAMOS DATOS
 const { post } = Astro.props;
 
-// Si por alguna razón post es undefined, redirigimos en vez de romper la web
 if (!post) {
-  return Astro.redirect('/blog');
+    return Astro.redirect('/blog');
 }
 
-// 5. EXTRACCIÓN DE DATOS (Mapeo WP)
+// 5. EXTRACCIÓN DE DATOS BÁSICOS
 const titulo = post.title.rendered;
 const contenido = post.content.rendered;
 const fecha = new Date(post.date).toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' });
-
-// Imagen destacada
-let imagenUrl = null;
-if (post._embedded && post._embedded['wp:featuredmedia'] && post._embedded['wp:featuredmedia'][0]) {
-    imagenUrl = post._embedded['wp:featuredmedia'][0].source_url;
-}
 
 // Categoría
 let categoria = "Actualidad";
 if (post._embedded && post._embedded['wp:term'] && post._embedded['wp:term'][0] && post._embedded['wp:term'][0][0]) {
     categoria = post._embedded['wp:term'][0][0].name;
 }
+
+// Imagen destacada (para el cuerpo de la noticia)
+let imagenUrl = null;
+if (post._embedded && post._embedded['wp:featuredmedia'] && post._embedded['wp:featuredmedia'][0]) {
+    imagenUrl = post._embedded['wp:featuredmedia'][0].source_url;
+}
+
+// ============================================================
+// 📍 MAPEO SEO (YOAST -> ASTRO)
+// ============================================================
+const yoast = post.yoast_head_json;
+
+// A. Título SEO
+const seoTitle = yoast?.title || titulo;
+
+// B. Descripción SEO
+// Limpiamos el excerpt de etiquetas HTML
+const cleanExcerpt = post.excerpt.rendered.replace(/<[^>]*>?/gm, '');
+const seoDesc = yoast?.description || cleanExcerpt;
+
+// C. Imagen SEO (Open Graph)
+// Si Yoast tiene imagen específica la usamos, si no, la destacada, si no, la de cabecera por defecto
+const seoImage = yoast?.og_image?.[0]?.url || imagenUrl || '/img/social-preview.jpg';
+// ============================================================
+
 ---
 
 <html lang="es">
-  <head>
+<head>
+    <!-- PASAMOS LOS DATOS MAPEADOS AL HEAD -->
     <BaseHead 
-        title={titulo} 
-        description={post.excerpt.rendered.replace(/<[^>]*>?/gm, '')} 
+        title={seoTitle} 
+        description={seoDesc} 
+        image={seoImage}
     />
-  </head>
-  <body class="bg-white font-sans text-gray-800">
+</head>
+<body class="bg-white font-sans text-gray-800">
     
     <!-- Navbar Blanco -->
     <div class="pt-20"> 
@@ -77,22 +96,25 @@ if (post._embedded && post._embedded['wp:term'] && post._embedded['wp:term'][0] 
                 {categoria} — {fecha}
             </span>
             
-            <!-- Título (con set:html por si WP mete caracteres especiales) -->
             <h1 class="text-3xl md:text-5xl font-bold text-gray-900 leading-tight mb-8" set:html={titulo}></h1>
             
             <!-- IMAGEN PRINCIPAL -->
-            <div class="rounded-3xl overflow-hidden shadow-xl mb-12 max-h-[500px]">
+            <div class="rounded-3xl overflow-hidden shadow-xl mb-12 aspect-video bg-gray-100 relative">
                 {imagenUrl ? (
                     <img 
                         src={imagenUrl} 
                         alt={titulo} 
-                        class="w-full h-full object-cover" 
+                        class="w-full h-full object-cover absolute inset-0"
+                        loading="eager"
+                        fetchpriority="high"
                     />
                 ) : (
                     <img 
                         src={imgCabecera.src} 
                         alt="Imagen por defecto"
-                        class="w-full h-full object-cover opacity-50"
+                        class="w-full h-full object-cover opacity-50 absolute inset-0"
+                        loading="eager"
+                        fetchpriority="high"
                     />
                 )}
             </div>
@@ -115,5 +137,5 @@ if (post._embedded && post._embedded['wp:term'] && post._embedded['wp:term'][0] 
     </main>
 
     <Footer />
-  </body>
+</body>
 </html>

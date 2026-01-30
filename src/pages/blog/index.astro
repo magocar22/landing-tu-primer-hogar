@@ -4,20 +4,21 @@ import BaseHead from '../../components/BaseHead.astro';
 import Navbar from '../../components/Navbar.astro';
 import Footer from '../../components/Footer.astro';
 import imgCabecera from '../../assets/fondo-salon.jpg';
+import PageHeader from '../../components/PageHeader.astro';
 
 // 1. IMPORTAMOS EL FETCH DE WORDPRESS
 import { fetchWP } from '../../lib/wordpress';
 
 // 2. PEDIMOS LAS NOTICIAS A WORDPRESS
 const wpPosts = await fetchWP<any[]>({
-  endpoint: 'posts', 
-  params: { 
+    endpoint: 'posts', 
+    params: { 
     per_page: '10', // Traer las últimas 10
     _embed: 'true'  // OBLIGATORIO: Para que traiga imágenes y categorías
-  }
+    }
 });
 
-// 3. MAPEO DE DATOS (Traductor WP -> Tu Diseño)
+// 3. MAPEO DE DATOS RECIBIDOS
 const posts = wpPosts.map(post => {
     // A. Extraer imagen destacada si existe
     let imagenUrl = null;
@@ -34,35 +35,32 @@ const posts = wpPosts.map(post => {
     return {
         slug: post.slug,
         titulo: post.title.rendered,
-        // Limpiamos las etiquetas HTML del extracto (ej: <p>Texto...</p>)
         descripcion: post.excerpt.rendered.replace(/<[^>]*>?/gm, ''), 
         fecha: new Date(post.date),
         categoria: nombreCategoria,
-        imagen: imagenUrl // URL completa que viene de WP
+        imagen: imagenUrl 
     };
 });
 ---
 
 <html lang="es">
-  <head>
+<head>
     <BaseHead title="Actualidad | Tu Primer Hogar" description="Novedades corporativas." />
-  </head>
-  <body class="bg-gray-50 font-sans text-gray-800">
+</head>
+<body class="bg-gray-50 font-sans text-gray-800">
     
     <Navbar isTransparent={true} />
 
-    <header class="relative h-[35vh] min-h-[300px] flex flex-col justify-center items-center bg-cover bg-center" style={`background-image: url('${imgCabecera.src}');`}>
-        <div class="absolute inset-0 bg-blue-900/70"></div>
-        <div class="relative z-10 text-center px-4 pt-16">
-            <h1 class="text-4xl md:text-5xl font-bold text-white tracking-wider uppercase drop-shadow-lg">
-                Actualidad
-            </h1>
-            <p class="text-blue-100 text-lg mt-4 max-w-2xl mx-auto font-light">
-                Noticias y novedades desde WordPress
-            </p>
-        </div>
-    </header>
+    <!-- HERO SECTION  -->
+    <PageHeader 
+        backgroundImage={imgCabecera}
+        title="Actualidad"
+        subtitle="Te contamos nuestras últimas novedades."
+        classes="h-[40vh] min-h-[300px] pt-16"
+        overlayClasses="bg-blue-900/70"
+    />
 
+    <!-- CONTENIDO PRINCIPAL -->
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         
         {posts.length === 0 && (
@@ -77,7 +75,6 @@ const posts = wpPosts.map(post => {
                     
                     <div class="h-56 overflow-hidden relative">
                         {post.imagen ? (
-                            // Usamos <img> estándar para evitar líos de dominios con Astro/WP local
                             <img 
                                 src={post.imagen} 
                                 alt={post.titulo} 
@@ -97,10 +94,10 @@ const posts = wpPosts.map(post => {
                             {post.fecha.toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}
                         </div>
                         <h2 class="text-xl font-bold text-gray-900 mb-3 group-hover:text-blue-600 transition-colors line-clamp-2" set:html={post.titulo}>
-                            {/* set:html es necesario porque a veces WP manda símbolos HTML en el título */}
+                            {/* set:html es necesario porque el título puede tener etiquetas HTML */}
                         </h2>
                         <p class="text-gray-600 line-clamp-3 text-sm leading-relaxed" set:html={post.descripcion}>
-                            {/* El extracto ya lo limpiamos arriba, pero por seguridad */}
+                            {/* set:html es necesario porque el extracto puede tener etiquetas HTML */}
                         </p>
                         <div class="mt-6 flex items-center text-blue-600 font-bold text-sm">
                             Leer noticia 
@@ -113,5 +110,5 @@ const posts = wpPosts.map(post => {
     </main>
 
     <Footer />
-  </body>
+</body>
 </html>

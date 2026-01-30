@@ -11,48 +11,55 @@ import Footer from "../components/Footer.astro";
 import { Image } from "astro:assets";
 import imgLogo from "../assets/tph-logo-blanco.png";
 import Navbar from "../components/Navbar.astro";
+import Separador from "../components/Separador.astro";
 ---
 
 <html lang="es">
   <head>
     <BaseHead
-      title="Tu Primer Hogar | Alquiler con opción a compra"
-      description="Consigue tu vivienda sin pagar entrada inicial. Nuestro modelo convierte tu alquiler mensual en inversión para tu futuro hogar. Infórmate gratis."
+      title="Tu Primer Hogar | Alquiler con derecho a compra"
+      description="Accede a tu vivienda sin pagar entrada inicial. Nuestro modelo convierte tu alquiler mensual en inversión para tu futuro hogar. Infórmate gratis."
     />
   </head>
   <body>
+
     <!-- SECCIÓN HERO (PORTADA) -->
     <Navbar isTransparent={true} />
-    <section
-      class="relative h-screen min-h-[600px] flex items-center justify-center bg-cover bg-center"
-      style="background-image: url('/img/hero-image.jpg');"
-    >
+
+    <section class="relative h-screen min-h-[600px] flex items-center justify-center overflow-hidden">
+      
+      <!-- IMAGEN LCP OPTIMIZADA -->
+      <!-- Al ser una imagen en 'public', usamos la etiqueta img estándar para control total -->
+      <img
+        src="/img/hero-image.jpg"
+        alt="Pareja disfrutando de su nuevo hogar"
+        class="absolute inset-0 w-full h-full object-cover z-0"
+        loading="eager"      
+        fetchpriority="high" 
+      />
+
       <!-- CAPA OSCURA (OVERLAY) -->
-      <div class="absolute inset-0 bg-black/50"></div>
+      <div class="absolute inset-0 bg-black/50 z-0"></div>
 
       <!-- CONTENIDO CENTRAL -->
       <div
         class="relative z-10 text-center text-white px-4 max-w-5xl mx-auto mt-16"
       >
         <h1
-          class="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight uppercase tracking-tight drop-shadow-md"
-        >
-          Tu hogar sin <br />
-          <span class="text-blue-400">pagar entrada</span>
+          class="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight uppercase tracking-tight drop-shadow-md"        >Tu hogar<br />
+          <span class="text-blue-400">sin pagar entrada</span>
         </h1>
 
         <p
           class="text-lg md:text-2xl mb-12 text-gray-100 max-w-2xl mx-auto drop-shadow font-light"
         >
-          La plataforma que convierte tu alquiler mensual en la compra de tu
-          futura vivienda. Sin letra pequeña.
+          Aprovecha tu alquiler mensual para la compra de tu futura vivienda. Sin letra pequeña.
         </p>
 
         <!-- BOTONES DE ACCIÓN -->
         <div
           class="flex flex-col sm:flex-row gap-4 justify-center items-center w-full"
         >
-          <!-- BOTÓN 1: CONTACTO / SOLICITAR INFO (Enlaza a la página de contacto) -->
           <a
             href="/contacto"
             class="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-10 rounded-full text-lg transition-all transform hover:-translate-y-1 hover:shadow-lg hover:shadow-blue-500/50"
@@ -60,7 +67,6 @@ import Navbar from "../components/Navbar.astro";
             Solicita más información
           </a>
 
-          <!-- BOTÓN 2: SABER MÁS (Ancla a la sección de "El Concepto") -->
           <a
             href="#modelo"
             class="w-full sm:w-auto bg-transparent hover:bg-white/10 text-white font-bold py-4 px-10 rounded-full text-lg transition-all border-2 border-white backdrop-blur-sm"
@@ -70,9 +76,9 @@ import Navbar from "../components/Navbar.astro";
         </div>
       </div>
 
-      <!-- ELEMENTO DECORATIVO: FLECHA SCROLL -->
+      <!-- FLECHA SCROLL -->
       <div
-        class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce text-white/70"
+        class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce text-white/70 z-10"
       >
         <svg
           class="w-6 h-6"
@@ -91,11 +97,13 @@ import Navbar from "../components/Navbar.astro";
     <!-- AQUI VAN LAS DISTINTAS SECCIONES -->
     <Concepto />
 
-    <Inversion />
+    <Separador />
 
     <Impacto />
 
-    <VisionMision />
+    <!-- <VisionMision /> -->
+    
+    <Separador />
 
     <Beneficios />
 

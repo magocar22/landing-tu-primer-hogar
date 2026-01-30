@@ -1,68 +1,85 @@
 ---
+// src/pages/proyectos/[slug].astro
 import { Image } from 'astro:assets';
 import BaseHead from '../../components/BaseHead.astro';
 import Footer from '../../components/Footer.astro';
 import ContactoForm from '../../components/Contacto.astro';
 import { fetchWP } from '../../lib/wordpress';
 
-// 1. SOLUCIÓN AL ERROR (Modo Híbrido)
+// 1. PRERENDERIZAMOS
 export const prerender = true;
 
 // 2. GENERAMOS RUTAS ESTÁTICAS
 export async function getStaticPaths() {
-  const proyectos = await fetchWP<any[]>({
-    endpoint: 'proyectos',
-    params: { 
-        per_page: '100', 
-        _embed: 'true' // VITAL: Esto trae la imagen destacada
-    }
-  });
+    const proyectos = await fetchWP<any[]>({
+        endpoint: 'proyectos',
+        params: { 
+            per_page: '100', 
+            _embed: 'true'
+        }
+    });
 
-  return proyectos.map(proyecto => ({
-    params: { slug: proyecto.slug }, 
-    props: { proyecto }, 
-  }));
+    return proyectos.map(proyecto => ({
+        params: { slug: proyecto.slug }, 
+        props: { proyecto }, 
+    }));
 }
 
 const { proyecto } = Astro.props;
 
-// Protección extra por si acaso
 if (!proyecto) {
     return Astro.redirect('/proyectos');
 }
 
-// Datos de ACF (Solo texto: ubicación, estado...)
-// Usamos un objeto vacío {} por defecto para que no explote si no hay ACF
 const acf = proyecto.acf || {};
+const contenidoHtml = proyecto.content.rendered;
 
-// 3. LÓGICA DE IMAGEN (SOLO NATIVA DE WORDPRESS)
-let imagenUrl = null;
-
-// Buscamos en los datos embebidos de WordPress (_embedded)
-if (proyecto._embedded && 
-    proyecto._embedded['wp:featuredmedia'] && 
-    proyecto._embedded['wp:featuredmedia'][0]) {
-    
-    imagenUrl = proyecto._embedded['wp:featuredmedia'][0].source_url;
+// Imagen visual para la cabecera
+let imagenCabecera = null;
+if (proyecto._embedded && proyecto._embedded['wp:featuredmedia'] && proyecto._embedded['wp:featuredmedia'][0]) {
+    imagenCabecera = proyecto._embedded['wp:featuredmedia'][0].source_url;
 }
 
-// Contenido HTML del editor de bloques
-const contenidoHtml = proyecto.content.rendered;
+// ============================================================
+// 📍 MAPEO SEO (YOAST -> ASTRO)
+// ============================================================
+
+const yoast = proyecto.yoast_head_json;
+
+// A. Título SEO
+const seoTitle = yoast?.title || proyecto.title.rendered;
+
+// B. Descripción SEO (Prioridad: Yoast > ACF > Excerpt)
+const rawExcerpt = proyecto.excerpt?.rendered || "";
+const cleanExcerpt = rawExcerpt.replace(/<[^>]*>?/gm, ''); 
+const seoDescription = yoast?.description || acf.descripcion_corta || cleanExcerpt || "Proyecto exclusivo de Tu Primer Hogar";
+
+// C. Imagen SEO (Open Graph)
+const seoImage = yoast?.og_image?.[0]?.url || imagenCabecera || '/img/social-preview.jpg';
+// ============================================================
+
 ---
 
 <html lang="es">
-  <head>
-    <BaseHead title={`${proyecto.title.rendered} | Proyecto`} description={acf.descripcion_corta} />
-  </head>
-  <body class="bg-gray-50 font-sans text-gray-800">
+<head>
+    <!-- INYECTAMOS LOS DATOS SEO EN EL BASEHEAD -->
+    <BaseHead 
+        title={seoTitle} 
+        description={seoDescription} 
+        image={seoImage}
+    />
+</head>
+<body class="bg-gray-50 font-sans text-gray-800">
     
     <!-- HEADER -->
     <header class="relative h-[50vh] min-h-[400px] flex items-end">
-        {imagenUrl ? (
+        {imagenCabecera ? (
             <img 
-                src={imagenUrl} 
+                src={imagenCabecera} 
                 alt={proyecto.title.rendered} 
-                class="absolute inset-0 w-full h-full object-cover" 
+                class="absolute inset-0 w-full h-full object-cover"
+                loading="eager"
+                fetchpriority="high"
             />
         ) : (
             <div class="absolute inset-0 bg-blue-900"></div>
@@ -71,13 +88,12 @@ const contenidoHtml = proyecto.content.rendered;
         <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
         
         <div class="absolute top-0 w-full p-6 z-20">
-             <a href="/proyectos" class="text-white font-bold flex items-center gap-2 hover:underline bg-black/20 px-4 py-2 rounded-full backdrop-blur-md w-fit">
+            <a href="/proyectos" class="text-white font-bold flex items-center gap-2 hover:underline bg-black/20 px-4 py-2 rounded-full backdrop-blur-md w-fit">
                 ← Volver al listado
-             </a>
+            </a>
         </div>
 
         <div class="relative z-10 p-8 md:p-12 max-w-7xl mx-auto w-full">
-            <!-- Badge de Estado (Desde ACF) -->
             <span class="bg-blue-600 text-white px-4 py-1 rounded-full text-sm font-bold mb-4 inline-block shadow-lg">
                 {acf.estado || 'Consultar'}
             </span>
@@ -93,34 +109,30 @@ const contenidoHtml = proyecto.content.rendered;
 
     <main class="max-w-7xl mx-auto px-4 py-12 grid grid-cols-1 lg:grid-cols-3 gap-12">
         
-        <!-- COLUMNA IZQUIERDA: INFORMACIÓN (Desde WordPress) -->
+        <!-- COLUMNA IZQUIERDA -->
         <div class="lg:col-span-2">
             <div class="bg-white p-8 md:p-10 rounded-3xl shadow-sm border border-gray-100">
-                
-                <!-- Inyectamos el HTML de WordPress tal cual -->
                 <article 
                     class="prose prose-blue prose-lg max-w-none text-gray-600" 
                     set:html={contenidoHtml}
                 />
 
-                <!-- GALERÍA ACF (Si decidiste mantenerla aparte) -->
                 {acf.galeria && (
-                   <div class="mt-12">
-                       <h3 class="text-2xl font-bold mb-6">Galería</h3>
-                       <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
-                           {acf.galeria.map((img: any) => (
-                               <img src={img.url} alt={img.alt} class="rounded-xl shadow-md hover:scale-105 transition-transform" />
-                           ))}
-                       </div>
-                   </div>
+                    <div class="mt-12">
+                        <h3 class="text-2xl font-bold mb-6">Galería</h3>
+                        <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                            {acf.galeria.map((img: any) => (
+                                <img src={img.url} alt={img.alt} class="rounded-xl shadow-md hover:scale-105 transition-transform" />
+                            ))}
+                        </div>
+                    </div>
                 )}
-
             </div>
         </div>
 
-        <!-- COLUMNA DERECHA: CONTACTO -->
+        <!-- COLUMNA DERECHA -->
         <div class="lg:col-span-1">
-            <div class="sticky top-8">
+            <div class="sticky top-8"> 
                 <div class="bg-blue-600 text-white p-6 rounded-t-3xl shadow-lg relative overflow-hidden">
                     <div class="relative z-10">
                         <h3 class="text-xl font-bold">¿Te interesa este proyecto?</h3>
@@ -138,5 +150,5 @@ const contenidoHtml = proyecto.content.rendered;
     </main>
 
     <Footer />
-  </body>
+</body>
 </html>

@@ -10,11 +10,11 @@ const { isTransparent = false } = Astro.props;
 
 const links = [
   { name: 'Inicio', url: '/' },
-  { name: 'El Modelo', url: '/modelo' },
+  { name: 'Modelo', url: '/modelo' },
   { name: 'Proyectos', url: '/proyectos' },
-  { name: 'Invertir', url: '/invertir' },
+  { name: 'Inversión', url: '/invertir' },
   { name: 'Accionistas', url: '/accionistas' },
-  { name: 'Actualidad', url: '/blog' },
+  { name: 'Prensa', url: '/blog' },
 ];
 
 // 📍 LÓGICA DE ESTADO ACTIVO (Saber en qué página estamos)
@@ -108,7 +108,7 @@ const isActiveLink = (url: string) => {
 
       <!-- BOTÓN HAMBURGUESA -->
       <div class="xl:hidden flex items-center relative z-50">
-        <button id="mobile-menu-btn" class:list={["focus:outline-none transition-colors p-2", isTransparent ? "text-white" : "text-gray-800"]}>
+        <button id="mobile-menu-btn" aria-label="Abrir menú de navegación" class:list={["focus:outline-none transition-colors p-2", isTransparent ? "text-white" : "text-gray-800"]}>
           <svg id="icon-menu" class="w-8 h-8 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
           </svg>
