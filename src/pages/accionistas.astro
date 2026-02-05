@@ -3,7 +3,8 @@ import BaseHead from '../components/BaseHead.astro';
 import Navbar from '../components/Navbar.astro';
 import Footer from '../components/Footer.astro';
 import { fetchWP } from '../lib/wordpress';
-import imgHeader from '../assets/fondo-salon.webp'; // Tu imagen
+import PageHeader from '../components/PageHeader.astro';
+import imgHeader from '../assets/fondo-salon.webp';
 
 // 1. UNA SOLA LLAMADA A LA API
 // Pedimos 'documentos' (el slug en CPT UI debe ser 'documentos')
@@ -44,17 +45,13 @@ const getFileLabel = (url) => {
     <Navbar isTransparent={true} />
 
     <!-- HERO -->
-    <header class="relative h-[35vh] min-h-[300px] flex flex-col justify-center items-center bg-cover bg-center" style={`background-image: url('${imgHeader.src}');`}>
-        <div class="absolute inset-0 bg-blue-900/70"></div>
-        <div class="relative z-10 text-center px-4 pt-16">
-            <h1 class="text-4xl md:text-5xl font-bold text-white tracking-wider uppercase drop-shadow-lg">
-                Inversores y Accionistas
-            </h1>
-            <p class="text-blue-100 text-lg mt-4 max-w-2xl mx-auto font-light">
-                Transparencia y rigor informativo.
-            </p>
-        </div>
-    </header>
+    <PageHeader 
+        backgroundImage={imgHeader}
+        title="Inversores y Accionistas"
+        subtitle="Transparencia y rigor informativo."
+        classes="h-[40vh] min-h-[300px] pt-16"
+        overlayClasses="bg-blue-900/70"
+    />
 
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         
